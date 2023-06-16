@@ -12,12 +12,12 @@ import {
   View,
 } from "@aws-amplify/ui-react";
 import { getUserNotes } from "./graphql/queries";
-import { updateTodo } from "./graphql/mutations";
+import { addNewTodo, updateTodo, deleteTodo } from "./graphql/mutations";
 import NoteForm from './NoteForm';
 
 const App = ({}) => {
   const [notes, setNotes] = useState([]);
-
+  const [showFormCreate, setShowFormCreate] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [currentNoteSKId, setCurrentNoteSKId] = useState('');
 
@@ -33,15 +33,32 @@ const App = ({}) => {
 
   const handleSubmitForm = (formData) => {
 
-    console.log(formData);
-    console.log(currentNoteSKId);
-
+    console.log("formData:", formData);
+    console.log("currentSKId:",currentNoteSKId);
     // 根据表单数据和当前笔记的 ID 执行更新数据库的操作
     updateNotes(formData);
 
     // 更新完成后，重置表单状态
     setShowForm(false);
     setCurrentNoteSKId('');
+  };
+
+  const handleButtonClickCreate = () => {
+    setShowFormCreate(true);
+  };
+
+  const handleSubmitFormCreate = (formData) => {
+
+    console.log("formData:", formData);
+    createNote(formData);
+
+    // 更新完成后，重置表单状态
+    setShowFormCreate(false);
+  };
+
+  const handleCancelForm = () => {
+    setShowForm(false);
+    setShowFormCreate(false);
   };
 
   // // promise.all 等待所有的异步处理完
@@ -88,9 +105,48 @@ const App = ({}) => {
     fetchNotes();
   }
 
+  async function createNote(formData) {
+    const { ListDescription, 
+      ListImage, 
+      ListStatus, 
+      ListTitle, 
+      } = formData;
+  
+      const apiData = await API.graphql({
+        query: addNewTodo,
+        variables: { 
+          id: "dd67@rice.edu", 
+          ListDescription: ListDescription, 
+          ListImage: ListImage, 
+          ListStatus: ListStatus, 
+          ListTitle: ListTitle
+        },
+      });
+      const notesFromAPI = apiData.data.addNewTodo;
+      console.log(notesFromAPI);
+      fetchNotes();
+  }
+
+  async function deleteNote(SK) {
+    const realnoteSKId = SK.substring(2);
+    const newNotes = notes.filter((note) => note.SK !== SK);
+    setNotes(newNotes);
+    await API.graphql({
+      query: deleteTodo,
+      variables: { 
+        pkid: "dd67@rice.edu", 
+        skid: realnoteSKId
+      },
+    });
+  }
+
   return (
     <View className="App">
       <Heading level={1}>My Notes App</Heading>
+      <Button onClick={() => handleButtonClickCreate()}>Create</Button>
+      {showFormCreate && (
+        <NoteForm onSubmit={(formData) => handleSubmitFormCreate(formData)} onCancel={handleCancelForm}/>
+      )}
       <Heading level={2}>Current Notes</Heading>
       <View margin="3rem 0">
         {notes.map((note) => (
@@ -121,12 +177,13 @@ const App = ({}) => {
             <Text as="span" fontWeight={700}>
               {note.ListTitle}
             </Text>
-            <Button onClick={() => handleButtonClick(note.SK)}>Submit</Button>
+            <Button onClick={() => handleButtonClick(note.SK)}>Update</Button>
+            <Button onClick={() => deleteNote(note.SK)}>Delete</Button>
           </Flex>
         ))}
 
         {showForm && (
-        <NoteForm onSubmit={(formData) => handleSubmitForm(formData)} />
+        <NoteForm onSubmit={(formData) => handleSubmitForm(formData)} onCancel={handleCancelForm}/>
         )}
       </View>
     </View>

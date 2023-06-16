@@ -14,7 +14,7 @@ import {
 import { getUserNotes } from "./graphql/queries";
 import { updateTodo } from "./graphql/mutations";
 
-const NoteForm = ({ onSubmit }) => {
+const NoteForm = ({ onSubmit, onCancel }) => {
     const [formData, setFormData] = useState(
       {
         ListDescription: '',
@@ -23,6 +23,7 @@ const NoteForm = ({ onSubmit }) => {
         ListTitle: '',
       }
     );
+    // const [formVisible, setFormVisible] = useState(true);
   
     const handleInputChange = (event) => {
       const { name, value } = event.target;
@@ -44,6 +45,21 @@ const NoteForm = ({ onSubmit }) => {
         ListTitle: '',
       });
     };
+
+    const handleCancel = () => {
+      setFormData({
+        ListDescription: '',
+        ListImage: '',
+        ListStatus: '',
+        ListTitle: '',
+      });
+      // setFormVisible(false);
+      onCancel();
+    };
+  
+    // if (!formVisible) {
+    //   return null; // 隐藏表单
+    // }
   
     return (
       <form onSubmit={handleSubmit}>
@@ -92,6 +108,7 @@ const NoteForm = ({ onSubmit }) => {
           />
         </div>
         <button type="submit">Submit</button>
+        <button type="button" onClick={handleCancel}>Cancel</button> {/* 添加取消按钮 */}
       </form>
     );
 };
