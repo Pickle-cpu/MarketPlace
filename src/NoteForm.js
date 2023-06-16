@@ -55,6 +55,7 @@ const NoteForm = ({ onSubmit }) => {
             name="ListDescription"
             value={formData.ListDescription}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div>
@@ -65,6 +66,7 @@ const NoteForm = ({ onSubmit }) => {
             name="ListImage"
             value={formData.ListImage}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div>
@@ -75,6 +77,7 @@ const NoteForm = ({ onSubmit }) => {
             name="ListStatus"
             value={formData.ListStatus}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div>
@@ -85,6 +88,7 @@ const NoteForm = ({ onSubmit }) => {
             name="ListTitle"
             value={formData.ListTitle}
             onChange={handleInputChange}
+            required
           />
         </div>
         <button type="submit">Submit</button>
