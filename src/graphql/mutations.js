@@ -16,6 +16,7 @@ export const addNewTodo = /* GraphQL */ `
       ListStatus: $ListStatus
       ListTitle: $ListTitle
     ) {
+      PK
       SK
       GSI1PK
       GSI1SK
@@ -49,6 +50,7 @@ export const updateTodo = /* GraphQL */ `
       ListStatus: $ListStatus
       ListTitle: $ListTitle
     ) {
+      PK
       SK
       GSI1PK
       GSI1SK

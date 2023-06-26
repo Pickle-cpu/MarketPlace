@@ -15,6 +15,7 @@ import {
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import NoteForm from './NoteForm';
+import { Link } from "react-router-dom";
 
 function Template() {
   const [userEmail, setUserEmail] = useState("");
@@ -42,6 +43,8 @@ function Template() {
         setUserEmail(userInfo.attributes.email);
       } catch (error) {
         console.error('error fetching user info:', error);
+        // go back to main page
+        navigate('/');
       }
     };
     fetchUser();
@@ -111,6 +114,17 @@ function Template() {
       query: getUserNotes,
       variables: { id: userEmail },
     });
+
+    // if (apiData.data && apiData.data.getUserNotes) {
+    //   const notesFromAPI = apiData.data.getUserNotes.todoList;
+    //   await Promise.all(notesFromAPI.map(async (note) => note));
+    //   setNotes(notesFromAPI);
+    // } else {
+    //   // 处理没有数据的情况
+    //   // 显示提示信息或采取其他适当的措施
+    //   setNotes([]);
+    // }
+    // 为什么是todoList而不是TodoList 因为是根据lambda的定义来的
     const notesFromAPI = apiData.data.getUserNotes.todoList;
     await Promise.all(notesFromAPI.map(async (note) => note));
     setNotes(notesFromAPI);
@@ -153,13 +167,6 @@ function Template() {
       },
     });
   }
-
-  // sign out function
-  const signOut = () => {
-    Auth.signOut()
-      .then(() => navigate('/')) // Navigate back to Home page
-      .catch((error) => console.log('error signing out:', error));
-  };
 
   // extract username from email
   const username = userEmail.split("@")[0];
@@ -216,7 +223,7 @@ function Template() {
       <br />
       <br />
       <br />
-      <button onClick={signOut}>Sign Out</button>
+      <Link to="/">Back to main page</Link>
     </div>
   );
 }

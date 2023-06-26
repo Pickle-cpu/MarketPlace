@@ -202,6 +202,7 @@ type Note {
 }
 
 type Todo {
+	PK: String!
 	SK: String!
 	GSI1PK: String!
 	GSI1SK: String!
@@ -246,7 +247,9 @@ type Mutation {
 }
 
 type Query {
+	getUserCertainNote(pkid: String!, skid: String!): Todo
 	getUserNotes(id: String!): TodoList
+	getNotesByStatus(status: String!): TodoList
 	getNote(id: ID!): Note
 	listNotes(filter: ModelNoteFilterInput, limit: Int, nextToken: String): ModelNoteConnection
 }

@@ -8,6 +8,7 @@ import Todo from './Todo';
 import NoteForm from './NoteForm';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import ConfirmSignUp from './ConfirmSignUp';
+import ProductDetail from './ProductDetail';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/confirmsignup" element={<ConfirmSignUp />} />
             <Route path="/Todo" element={<Todo />} />
             <Route path="/NoteForm" element={<NoteForm />} />
+            <Route path="/productdetail" element={<ProductDetail />} />
           </Routes>
         </header>
       </div>

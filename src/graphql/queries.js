@@ -1,10 +1,43 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getUserCertainNote = /* GraphQL */ `
+  query GetUserCertainNote($pkid: String!, $skid: String!) {
+    getUserCertainNote(pkid: $pkid, skid: $skid) {
+      PK
+      SK
+      GSI1PK
+      GSI1SK
+      ListCreatedDate
+      ListDescription
+      ListImage
+      ListStatus
+      ListTitle
+    }
+  }
+`;
 export const getUserNotes = /* GraphQL */ `
   query GetUserNotes($id: String!) {
     getUserNotes(id: $id) {
       todoList {
+        PK
+        SK
+        GSI1PK
+        GSI1SK
+        ListCreatedDate
+        ListDescription
+        ListImage
+        ListStatus
+        ListTitle
+      }
+    }
+  }
+`;
+export const getNotesByStatus = /* GraphQL */ `
+  query GetNotesByStatus($status: String!) {
+    getNotesByStatus(status: $status) {
+      todoList {
+        PK
         SK
         GSI1PK
         GSI1SK

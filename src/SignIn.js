@@ -13,7 +13,7 @@ function SignIn() {
         try {
             const user = await Auth.signIn(username, password);
             console.log(user);
-            navigate('/Template');
+            navigate('/');
         } catch (error) {
             console.log('error signing in:', error);
             setError(error.message); // update the error message if sign in fails
