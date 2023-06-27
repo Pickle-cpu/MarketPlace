@@ -51,7 +51,8 @@ function ProductDetail() {
             await Auth.currentAuthenticatedUser();
             alert('You are logged in!');
         } catch (error) {
-            alert('Please back to the main page and log in before you buy!');
+            alert('Please log in before you buy!');
+            navigate('/signin');
         }
     }
 

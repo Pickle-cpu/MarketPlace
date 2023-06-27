@@ -1,6 +1,16 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getUser = /* GraphQL */ `
+  query GetUser($pkid: String!) {
+    getUser(pkid: $pkid) {
+      PK
+      SK
+      UserEmail
+      UserSubscriptionStatus
+    }
+  }
+`;
 export const getUserCertainNote = /* GraphQL */ `
   query GetUserCertainNote($pkid: String!, $skid: String!) {
     getUserCertainNote(pkid: $pkid, skid: $skid) {

@@ -224,7 +224,15 @@ input UpdateNoteInput {
 	image: String
 }
 
+type User {
+	PK: String!
+	SK: String!
+	UserEmail: String!
+	UserSubscriptionStatus: String!
+}
+
 type Mutation {
+	addNewUser(pkid: String!, UserEmail: String!, UserSubscriptionStatus: String!): User
 	addNewTodo(
 		id: String!,
 		ListDescription: String!,
@@ -241,12 +249,14 @@ type Mutation {
 		ListStatus: String!,
 		ListTitle: String!
 	): Todo
+	updateUser(pkid: String!, UserSubscriptionStatus: String!): User
 	createNote(input: CreateNoteInput!, condition: ModelNoteConditionInput): Note
 	updateNote(input: UpdateNoteInput!, condition: ModelNoteConditionInput): Note
 	deleteNote(input: DeleteNoteInput!, condition: ModelNoteConditionInput): Note
 }
 
 type Query {
+	getUser(pkid: String!): User
 	getUserCertainNote(pkid: String!, skid: String!): Todo
 	getUserNotes(id: String!): TodoList
 	getNotesByStatus(status: String!): TodoList

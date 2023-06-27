@@ -14,7 +14,7 @@ import {
 import { getUserNotes } from "./graphql/queries";
 import { updateTodo } from "./graphql/mutations";
 
-const NoteForm = ({ onSubmit, onCancel }) => {
+const NoteForm = ({ onSubmit, onCancel, showImage }) => {
     const [formData, setFormData] = useState(
       {
         ListDescription: '',
@@ -74,6 +74,7 @@ const NoteForm = ({ onSubmit, onCancel }) => {
             required
           />
         </div>
+        {showImage && (
         <div>
           <label htmlFor="ListImage">ListImage:</label>
           <input
@@ -85,6 +86,7 @@ const NoteForm = ({ onSubmit, onCancel }) => {
             required
           />
         </div>
+        )}
         <div>
           <label htmlFor="ListStatus">ListStatus:</label>
           <input

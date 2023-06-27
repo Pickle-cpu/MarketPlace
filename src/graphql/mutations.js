@@ -1,6 +1,24 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const addNewUser = /* GraphQL */ `
+  mutation AddNewUser(
+    $pkid: String!
+    $UserEmail: String!
+    $UserSubscriptionStatus: String!
+  ) {
+    addNewUser(
+      pkid: $pkid
+      UserEmail: $UserEmail
+      UserSubscriptionStatus: $UserSubscriptionStatus
+    ) {
+      PK
+      SK
+      UserEmail
+      UserSubscriptionStatus
+    }
+  }
+`;
 export const addNewTodo = /* GraphQL */ `
   mutation AddNewTodo(
     $id: String!
@@ -59,6 +77,16 @@ export const updateTodo = /* GraphQL */ `
       ListImage
       ListStatus
       ListTitle
+    }
+  }
+`;
+export const updateUser = /* GraphQL */ `
+  mutation UpdateUser($pkid: String!, $UserSubscriptionStatus: String!) {
+    updateUser(pkid: $pkid, UserSubscriptionStatus: $UserSubscriptionStatus) {
+      PK
+      SK
+      UserEmail
+      UserSubscriptionStatus
     }
   }
 `;

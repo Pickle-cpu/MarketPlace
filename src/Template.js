@@ -1,8 +1,8 @@
 import { API, Auth } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUserNotes } from './graphql/queries';
-import { addNewTodo, updateTodo, deleteTodo } from "./graphql/mutations";
+import { getUserNotes, getUser } from './graphql/queries';
+import { addNewTodo, updateTodo, deleteTodo, updateUser } from "./graphql/mutations";
 import {
   Button,
   Flex,
@@ -19,10 +19,14 @@ import { Link } from "react-router-dom";
 
 function Template() {
   const [userEmail, setUserEmail] = useState("");
+  const [userSubscriptionStatus,setUserSubscriptionStatus] = useState("");
   const navigate = useNavigate();
   const [notes, setNotes] = useState([]);
+
   const [showFormCreate, setShowFormCreate] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [showImage, setShowImage] = useState(true);
+
   const [currentNoteSKId, setCurrentNoteSKId] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
@@ -31,9 +35,10 @@ function Template() {
   // fetch notes when component mounts
   useEffect(() => {
     if(userEmail !== "") {
-        fetchNotes();
+      fetchImageEnable();
+      fetchNotes();
     }
-}, [userEmail]);
+  }, [userEmail]);
 
 
   useEffect(() => {
@@ -80,7 +85,14 @@ function Template() {
 
   // function to handle button click to create note
   const handleButtonClickCreate = () => {
-    setShowFormCreate(true);
+    console.log(userSubscriptionStatus);
+    if(userSubscriptionStatus != "subscribed"){
+      setShowImage(false);
+      setShowFormCreate(true);
+    }else{
+      setShowImage(true);
+      setShowFormCreate(true);
+    }
   };
 
   // function to handle submission of create form
@@ -114,20 +126,21 @@ function Template() {
       query: getUserNotes,
       variables: { id: userEmail },
     });
-
-    // if (apiData.data && apiData.data.getUserNotes) {
-    //   const notesFromAPI = apiData.data.getUserNotes.todoList;
-    //   await Promise.all(notesFromAPI.map(async (note) => note));
-    //   setNotes(notesFromAPI);
-    // } else {
-    //   // 处理没有数据的情况
-    //   // 显示提示信息或采取其他适当的措施
-    //   setNotes([]);
-    // }
     // 为什么是todoList而不是TodoList 因为是根据lambda的定义来的
     const notesFromAPI = apiData.data.getUserNotes.todoList;
     await Promise.all(notesFromAPI.map(async (note) => note));
     setNotes(notesFromAPI);
+  }
+
+  async function fetchImageEnable() {
+
+    const apiData = await API.graphql({
+      query: getUser,
+      variables: { pkid: userEmail },
+    });
+    const notesFromAPI = apiData.data.getUser;
+    setUserSubscriptionStatus(notesFromAPI.UserSubscriptionStatus);
+
   }
 
   const handleDeleteConfirmation = (SK) => {
@@ -171,14 +184,33 @@ function Template() {
   // extract username from email
   const username = userEmail.split("@")[0];
 
+  async function handleSubsciption () {
+
+    if(userSubscriptionStatus == "subscribed"){
+      alert("Please do not repeat subscriptions!");
+    }else{
+
+      await API.graphql({
+        query: updateUser,
+        variables: {
+          pkid: userEmail,
+          UserSubscriptionStatus: "subscribed"
+        },
+      });
+      fetchImageEnable();
+      alert("Congrats! You are a premium user now!");
+
+    }
+  }
+
   return (
     <div>
       <h1>Hello, {username}!</h1>
       <View className="App">
-        <Heading level={1}>My Notes App</Heading>
+        <Heading level={2}>Your Todo List App</Heading>
         <Button onClick={handleButtonClickCreate}>Create</Button>
         {showFormCreate && (
-          <NoteForm onSubmit={(formData) => handleSubmitFormCreate(formData)} onCancel={handleCancelForm} />
+          <NoteForm onSubmit={(formData) => handleSubmitFormCreate(formData)} onCancel={handleCancelForm} showImage = {showImage} />
         )}
         <Heading level={2}>Current Notes</Heading>
         <View margin="3rem 0">
@@ -193,15 +225,35 @@ function Template() {
               <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.GSI1SK}</Text>
               <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListCreatedDate}</Text>
               <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListDescription}</Text>
+              {showImage && 
               <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListImage}</Text>
+              }
               <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListStatus}</Text>
               <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListTitle}</Text>
               <Button onClick={() => handleButtonClick(note.SK)}>Update</Button>
               <Button onClick={() => handleDeleteConfirmation(note.SK)}>Delete</Button>
             </Flex>
           ))}
+          {/* 这里是对回调函数的使用
+          回调函数意味着我们在template里面当前状态还不一定想要触发handleSubmitForm
+          所以我们传递handleSubmitForm给它的下一任
+          也就是noteform 由它决定是否要触发
+          理解为 onsubmit是一个包括handleSubmitForm的匿名函数且被传到了noteform里
+          使用匿名函数是我们不希望一进入noteform就触发handleSubmitForm
+          而是希望等到需要触发的时候才触发
+          匿名函数之所以能够阻止立即执行是因为将匿名函数作为回调函数传递给事件处理器时
+          实际上只是将函数本身传递给了事件处理器
+          而不是立即执行该函数
+          如果直接放handleSubmitForm(formData)给onsubmit
+          整个函数将在绑定的那一刻马上被执行
+          匿名函数的第一个()里面放名字是为了规范
+          规定了传进handleSubmitForm的参数的名字必须是formData 增加可读性 */}
+          {/* 如果直接将handleSubmitForm(formData)作为回调函数传递给onSubmit
+          那么在进入NoteForm组件时 会立即执行handleSubmitForm函数
+          并尝试寻找当前的formData值
+          这可能会导致意外的行为因为formData的值可能在这时还未定义或不正确 */}
           {showForm && (
-            <NoteForm onSubmit={(formData) => handleSubmitForm(formData)} onCancel={handleCancelForm} />
+            <NoteForm onSubmit={(formData) => handleSubmitForm(formData)} onCancel={handleCancelForm} showImage = {showImage} />
           )}
         </View>
         {confirmDelete && (
@@ -220,7 +272,8 @@ function Template() {
       </View>
       <br />
       <br />
-      <br />
+      <Heading level={2}>Wanna add images for your todo lists?</Heading>
+      <Button onClick={handleSubsciption}>Subscribe now</Button>
       <br />
       <br />
       <Link to="/">Back to main page</Link>
