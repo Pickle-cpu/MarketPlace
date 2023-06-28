@@ -22,10 +22,10 @@ export const addNewUser = /* GraphQL */ `
 export const addNewTodo = /* GraphQL */ `
   mutation AddNewTodo(
     $id: String!
-    $ListDescription: String!
-    $ListImage: String!
+    $ListDescription: String
+    $ListImage: String
     $ListStatus: String!
-    $ListTitle: String!
+    $ListTitle: String
   ) {
     addNewTodo(
       id: $id
@@ -33,17 +33,7 @@ export const addNewTodo = /* GraphQL */ `
       ListImage: $ListImage
       ListStatus: $ListStatus
       ListTitle: $ListTitle
-    ) {
-      PK
-      SK
-      GSI1PK
-      GSI1SK
-      ListCreatedDate
-      ListDescription
-      ListImage
-      ListStatus
-      ListTitle
-    }
+    )
   }
 `;
 export const deleteTodo = /* GraphQL */ `
@@ -55,10 +45,10 @@ export const updateTodo = /* GraphQL */ `
   mutation UpdateTodo(
     $pkid: String!
     $skid: String!
-    $ListDescription: String!
-    $ListImage: String!
-    $ListStatus: String!
-    $ListTitle: String!
+    $ListDescription: String
+    $ListImage: String
+    $ListStatus: String
+    $ListTitle: String
   ) {
     updateTodo(
       pkid: $pkid
@@ -67,17 +57,7 @@ export const updateTodo = /* GraphQL */ `
       ListImage: $ListImage
       ListStatus: $ListStatus
       ListTitle: $ListTitle
-    ) {
-      PK
-      SK
-      GSI1PK
-      GSI1SK
-      ListCreatedDate
-      ListDescription
-      ListImage
-      ListStatus
-      ListTitle
-    }
+    )
   }
 `;
 export const updateUser = /* GraphQL */ `

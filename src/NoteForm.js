@@ -19,7 +19,6 @@ const NoteForm = ({ onSubmit, onCancel, showImage }) => {
       {
         ListDescription: '',
         ListImage: '',
-        ListStatus: '',
         ListTitle: '',
       }
     );
@@ -27,6 +26,8 @@ const NoteForm = ({ onSubmit, onCancel, showImage }) => {
   
     const handleInputChange = (event) => {
       const { name, value } = event.target;
+      // 直接把这个匿名函数的值传给了setformdata
+      // ...prevFormData是从之前的formdata继承所有的旧值
       setFormData((prevFormData) => ({
         ...prevFormData,
         [name]: value,
@@ -35,13 +36,20 @@ const NoteForm = ({ onSubmit, onCancel, showImage }) => {
   
     const handleSubmit = (event) => {
       event.preventDefault();
-      onSubmit(formData);
+
+      const dataToSubmit = {};
+      for (const key in formData) {
+        if (formData.hasOwnProperty(key) && formData[key] !== '') {
+          dataToSubmit[key] = formData[key];
+        }
+      }
+      // 使用匿名函数
+      onSubmit(dataToSubmit);
 
       // 重置 formData 为初始状态
       setFormData({
         ListDescription: '',
         ListImage: '',
-        ListStatus: '',
         ListTitle: '',
       });
     };
@@ -50,7 +58,6 @@ const NoteForm = ({ onSubmit, onCancel, showImage }) => {
       setFormData({
         ListDescription: '',
         ListImage: '',
-        ListStatus: '',
         ListTitle: '',
       });
       // setFormVisible(false);
@@ -71,7 +78,7 @@ const NoteForm = ({ onSubmit, onCancel, showImage }) => {
             name="ListDescription"
             value={formData.ListDescription}
             onChange={handleInputChange}
-            required
+            // required
           />
         </div>
         {showImage && (
@@ -83,11 +90,11 @@ const NoteForm = ({ onSubmit, onCancel, showImage }) => {
             name="ListImage"
             value={formData.ListImage}
             onChange={handleInputChange}
-            required
+            // required
           />
         </div>
         )}
-        <div>
+        {/* <div>
           <label htmlFor="ListStatus">ListStatus:</label>
           <input
             type="text"
@@ -95,9 +102,9 @@ const NoteForm = ({ onSubmit, onCancel, showImage }) => {
             name="ListStatus"
             value={formData.ListStatus}
             onChange={handleInputChange}
-            required
+            // required
           />
-        </div>
+        </div> */}
         <div>
           <label htmlFor="ListDescription">ListTitle:</label>
           <input
@@ -106,7 +113,7 @@ const NoteForm = ({ onSubmit, onCancel, showImage }) => {
             name="ListTitle"
             value={formData.ListTitle}
             onChange={handleInputChange}
-            required
+            // required
           />
         </div>
         <button type="submit">Submit</button>

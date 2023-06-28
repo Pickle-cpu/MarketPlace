@@ -31,6 +31,7 @@ function ProductPool() {
     });
     const notesFromAPI = apiData.data.getNotesByStatus.todoList;
     await Promise.all(notesFromAPI.map(async (note) => note));
+    console.log(notesFromAPI);
     setNotes(notesFromAPI);
     console.log(notes);
   }

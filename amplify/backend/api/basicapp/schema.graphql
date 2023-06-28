@@ -206,11 +206,11 @@ type Todo {
 	SK: String!
 	GSI1PK: String!
 	GSI1SK: String!
-	ListCreatedDate: String!
-	ListDescription: String!
-	ListImage: String!
-	ListStatus: String!
-	ListTitle: String!
+	ListCreatedDate: String
+	ListDescription: String
+	ListImage: String
+	ListStatus: String
+	ListTitle: String
 }
 
 type TodoList {
@@ -235,20 +235,20 @@ type Mutation {
 	addNewUser(pkid: String!, UserEmail: String!, UserSubscriptionStatus: String!): User
 	addNewTodo(
 		id: String!,
-		ListDescription: String!,
-		ListImage: String!,
+		ListDescription: String,
+		ListImage: String,
 		ListStatus: String!,
-		ListTitle: String!
-	): Todo
+		ListTitle: String
+	): Boolean
 	deleteTodo(pkid: String!, skid: String!): Boolean
 	updateTodo(
 		pkid: String!,
 		skid: String!,
-		ListDescription: String!,
-		ListImage: String!,
-		ListStatus: String!,
-		ListTitle: String!
-	): Todo
+		ListDescription: String,
+		ListImage: String,
+		ListStatus: String,
+		ListTitle: String
+	): Boolean
 	updateUser(pkid: String!, UserSubscriptionStatus: String!): User
 	createNote(input: CreateNoteInput!, condition: ModelNoteConditionInput): Note
 	updateNote(input: UpdateNoteInput!, condition: ModelNoteConditionInput): Note

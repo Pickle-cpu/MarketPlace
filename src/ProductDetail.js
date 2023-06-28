@@ -73,8 +73,10 @@ function ProductDetail() {
                 <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.GSI1SK}</Text>
                 <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListCreatedDate}</Text>
                 <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListDescription}</Text>
+                {note.ListImage && 
                 <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListImage}</Text>
-                <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListStatus}</Text>
+                }
+                {/* <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListStatus}</Text> */}
                 <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListTitle}</Text>
             </Flex>
         </View>
