@@ -26,11 +26,15 @@ function Template() {
   const [showFormCreate, setShowFormCreate] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showImage, setShowImage] = useState(true);
-
   const [currentNoteSKId, setCurrentNoteSKId] = useState('');
+
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [noteToDelete, setNoteToDelete] = useState("");
+
+  const [confirmPublish, setConfirmPublish] = useState(false);
+  const [publishConfirmText, setPublishConfirmText] = useState("");
+  const [noteToPublish, setNoteToPublish] = useState("");
 
   // fetch notes when component mounts
   useEffect(() => {
@@ -57,7 +61,6 @@ function Template() {
 
   // function to handle button click to update note
   const handleButtonClick = (noteSKId) => {
-    console.log("hihere");
     const realnoteSKId = noteSKId.substring(2);
     setCurrentNoteSKId(realnoteSKId);
 
@@ -72,11 +75,8 @@ function Template() {
 
   // function to handle submission of update form
   const handleSubmitForm = async (formData) => {
-    const { ListDescription, ListImage, ListTitle } = formData;
+    const { ListDescription, ListImage, ListStatus, ListTitle } = formData;
     console.log(formData);
-    console.log(ListDescription);
-    console.log(ListImage);
-    console.log(ListTitle);
 
     const variables = {
       pkid: userEmail,
@@ -88,35 +88,49 @@ function Template() {
     if(ListImage){
       variables.ListImage = ListImage;
     }
+    if(ListStatus){
+      variables.ListStatus = ListStatus;
+    }
     if(ListTitle){
       variables.ListTitle = ListTitle;
     }
 
     console.log(variables);
 
-    // if (
-    //   ListDescription === undefined &&
-    //   ListImage === undefined &&
-    //   ListTitle === undefined
-    // ){
-    //   alert("You update nothing!");
-    // }else{
-      // try{
-      await API.graphql({
-        query: updateTodo,
-        variables: variables,
-      });
-    // }catch(error){
-    //   console.log(error);
-    // }
-
-    // }
+    await API.graphql({
+      query: updateTodo,
+      variables: variables,
+    });
 
     // refresh notes after update
     fetchNotes();
     // hide form after submission
     setShowForm(false);
     setCurrentNoteSKId('');
+
+  };
+
+  // 不用管
+  const handleSubmitFormForPublish = async (formData) => {
+    const { noteToPublish, ListStatus, ListPrice } = formData;
+    console.log(formData);
+    
+    const variables = {
+      pkid: userEmail,
+      skid: noteToPublish.substring(2),
+      ListStatus: ListStatus,
+      ListPrice: ListPrice
+    };
+
+    console.log(variables);
+
+    await API.graphql({
+      query: updateTodo,
+      variables: variables,
+    });
+
+    // refresh notes after update
+    fetchNotes();
 
   };
 
@@ -201,6 +215,8 @@ function Template() {
     const notesFromAPI = apiData.data.getUser;
     if(notesFromAPI.UserSubscriptionStatus == "subscribed"){
       setUserSubscriptionStatus(true);
+    }else{
+      setUserSubscriptionStatus(false);
     }
 
   }
@@ -210,12 +226,17 @@ function Template() {
     setConfirmDelete(true);
   }
 
-  const handlePublishConfirmation = () => {
-    alert("Do you want to publish this todo list?");
+  const handlePublishConfirmation = (SK) => {
+    setNoteToPublish(SK);
+    setConfirmPublish(true);
   }
 
   const handleConfirmDeleteChange = (event) => {
     setDeleteConfirmText(event.target.value);
+  }
+
+  const handleConfirmPublishChange = (event) => {
+    setPublishConfirmText(event.target.value);
   }
 
   const confirmDeleteNote = () => {
@@ -223,8 +244,26 @@ function Template() {
       deleteNote(noteToDelete);
       setConfirmDelete(false);
       setDeleteConfirmText("");
+      setNoteToDelete("");
     } else {
       alert("Please enter 'Delete' to confirm deletion.");
+    }
+  }
+
+  const confirmPublishNote = () => {
+    if (publishConfirmText === "") {
+      alert("Please enter a price.");
+    } else {
+      const formData = {
+        noteToPublish: noteToPublish,
+        ListStatus: "published",
+        ListPrice: publishConfirmText
+      }
+      handleSubmitFormForPublish(formData);
+      console.log(publishConfirmText);
+      setConfirmPublish(false);
+      setPublishConfirmText("");
+      setNoteToPublish("");
     }
   }
 
@@ -232,6 +271,12 @@ function Template() {
     setConfirmDelete(false);
     setDeleteConfirmText("");
     setNoteToDelete("");
+  }
+
+  const cancelPublishConfirmation = () => {
+    setConfirmPublish(false);
+    setPublishConfirmText("");
+    setNoteToPublish("");
   }
 
   const deleteNote = async (SK) => {
@@ -246,9 +291,6 @@ function Template() {
       },
     });
   }
-
-  // extract username from email
-  const username = userEmail.split("@")[0];
 
   async function handleSubsciption () {
 
@@ -268,6 +310,28 @@ function Template() {
 
     }
   }
+
+  async function handleCancelSubsciption () {
+
+    if(userSubscriptionStatus){
+      alert("Do you really want to cancel your subscription? You won't be able to change your uploaded images again.");
+      await API.graphql({
+        query: updateUser,
+        variables: {
+          pkid: userEmail,
+          UserSubscriptionStatus: "unsubscribe"
+        },
+      });
+      fetchImageEnable();
+      alert("You have already canceled your premium user experience.");
+    }else{
+      alert("Please do not repeat cancellation!");
+    }
+    
+  }
+
+  // extract username from email
+  const username = userEmail.split("@")[0];
 
   return (
     <div>
@@ -295,7 +359,10 @@ function Template() {
               <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListDescription}</Text>
               {/* {console.log("hi"+note.ListImage)} */}
               {note.ListImage && 
-              <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListImage}</Text>
+                <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListImage}</Text>
+              }
+              {note.ListPrice &&
+                <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListPrice}</Text>
               }
               <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListStatus}</Text>
               
@@ -308,9 +375,9 @@ function Template() {
               这样做可以让你在事件处理函数中访问事件对象的属性和方法
               (event) => handleButtonClick(event, param) */}
               {/* 比如onCancel(param)实际上是将param传给了onCancel然后onCancel内部再对param进行使用 */}
-              <Button onClick={() => handleButtonClick(note.SK)}>Update</Button>
+              {!note.ListPrice && (<Button onClick={() => handleButtonClick(note.SK)}>Update</Button>)}
               <Button onClick={() => handleDeleteConfirmation(note.SK)}>Delete</Button>
-              <Button onClick={() => handlePublishConfirmation()}>Publish</Button>
+              {!note.ListPrice && (<Button onClick={() => handlePublishConfirmation(note.SK)}>Publish</Button>)}
             </Flex>
           ))}
           {/* 这里是对回调函数的使用
@@ -339,23 +406,49 @@ function Template() {
           )}
         </View>
         {confirmDelete && (
-        <View>
-          <Text style={{ color: 'white' }}>Are you sure that you want to delete this to-do list?</Text>
-          <Text style={{ color: 'white' }}>If so, please type in "Delete" below.</Text>
-          <TextField
-            onChange={handleConfirmDeleteChange}
-            value={deleteConfirmText}
-            placeholder="Type 'Delete' here"
-          />
-          <Button onClick={confirmDeleteNote}>Confirm Delete</Button>
-          <Button onClick={cancelDeleteConfirmation}>Cancel</Button>
-        </View>
-      )}
+          <View>
+            <Text style={{ color: 'white' }}>Are you sure that you want to delete this to-do list?</Text>
+            <Text style={{ color: 'white' }}>If so, please type in "Delete" below.</Text>
+            <TextField
+              onChange={handleConfirmDeleteChange}
+              value={deleteConfirmText}
+              placeholder="Type 'Delete' here"
+            />
+            <Button onClick={confirmDeleteNote}>Confirm Delete</Button>
+            <Button onClick={cancelDeleteConfirmation}>Cancel</Button>
+          </View>
+        )}
+        {confirmPublish && (
+          <View>
+            <Text style={{ color: 'white' }}>Are you sure that you want to publish this to-do list?</Text>
+            <Text style={{ color: 'white' }}>Once the list is published to the public product pool, you cannot update or publish it again.</Text>
+            <Text style={{ color: 'white' }}>If so, please type in your desired price below.</Text>
+            <TextField
+              onChange={handleConfirmPublishChange}
+              value={publishConfirmText}
+              // placeholder的作用就是如果value对应的那个值目前是空的话就先放placeholder
+              // 它是一个占位符 一旦value有值不为空了就显示value的值
+              placeholder="Type your price here"
+            />
+            <Button onClick={confirmPublishNote}>Confirm Publish</Button>
+            <Button onClick={cancelPublishConfirmation}>Cancel</Button>
+          </View>
+        )}
       </View>
       <br />
       <br />
-      <Heading level={2}>Wanna add images for your todo lists?</Heading>
-      <Button onClick={handleSubsciption}>Subscribe now</Button>
+      {userSubscriptionStatus ? (
+        <div>
+          <Heading level={2}>Wanna cancel your subscription?</Heading>
+          <Button onClick={handleCancelSubsciption}>Cancel</Button>
+        </div>
+      ) : (
+        <div>
+          <Heading level={2}>Wanna add images for your todo lists?</Heading>
+          <Button onClick={handleSubsciption}>Subscribe now</Button>
+        </div>
+      )}
+      
       <br />
       <br />
       <Link to="/">Back to main page</Link>

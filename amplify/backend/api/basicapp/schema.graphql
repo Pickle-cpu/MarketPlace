@@ -211,6 +211,7 @@ type Todo {
 	ListImage: String
 	ListStatus: String
 	ListTitle: String
+	ListPrice: String
 }
 
 type TodoList {
@@ -238,7 +239,8 @@ type Mutation {
 		ListDescription: String,
 		ListImage: String,
 		ListStatus: String!,
-		ListTitle: String
+		ListTitle: String,
+		ListPrice: String
 	): Boolean
 	deleteTodo(pkid: String!, skid: String!): Boolean
 	updateTodo(
@@ -248,6 +250,7 @@ type Mutation {
 		ListImage: String,
 		ListStatus: String,
 		ListTitle: String
+		ListPrice: String
 	): Boolean
 	updateUser(pkid: String!, UserSubscriptionStatus: String!): User
 	createNote(input: CreateNoteInput!, condition: ModelNoteConditionInput): Note

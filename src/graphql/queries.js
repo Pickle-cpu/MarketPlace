@@ -23,6 +23,7 @@ export const getUserCertainNote = /* GraphQL */ `
       ListImage
       ListStatus
       ListTitle
+      ListPrice
     }
   }
 `;
@@ -39,6 +40,7 @@ export const getUserNotes = /* GraphQL */ `
         ListImage
         ListStatus
         ListTitle
+        ListPrice
       }
     }
   }
@@ -56,6 +58,7 @@ export const getNotesByStatus = /* GraphQL */ `
         ListImage
         ListStatus
         ListTitle
+        ListPrice
       }
     }
   }

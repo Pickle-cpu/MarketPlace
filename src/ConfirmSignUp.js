@@ -12,12 +12,12 @@ function ConfirmSignUp() {
         try {
             await Auth.confirmSignUp(username, authCode);
             console.log('Code confirmed successfully');
-
+            console.log(username);
             // add user infor to own db
             await API.graphql({
                 query: addNewUser,
                 variables: {
-                  PK: username,
+                  pkid: username,
                   UserEmail: username,
                   UserSubscriptionStatus: "unsubscribe"
                 },

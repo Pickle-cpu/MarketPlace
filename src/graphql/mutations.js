@@ -26,6 +26,7 @@ export const addNewTodo = /* GraphQL */ `
     $ListImage: String
     $ListStatus: String!
     $ListTitle: String
+    $ListPrice: String
   ) {
     addNewTodo(
       id: $id
@@ -33,6 +34,7 @@ export const addNewTodo = /* GraphQL */ `
       ListImage: $ListImage
       ListStatus: $ListStatus
       ListTitle: $ListTitle
+      ListPrice: $ListPrice
     )
   }
 `;
@@ -49,6 +51,7 @@ export const updateTodo = /* GraphQL */ `
     $ListImage: String
     $ListStatus: String
     $ListTitle: String
+    $ListPrice: String
   ) {
     updateTodo(
       pkid: $pkid
@@ -57,6 +60,7 @@ export const updateTodo = /* GraphQL */ `
       ListImage: $ListImage
       ListStatus: $ListStatus
       ListTitle: $ListTitle
+      ListPrice: $ListPrice
     )
   }
 `;

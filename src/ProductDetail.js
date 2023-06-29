@@ -26,6 +26,8 @@ function ProductDetail() {
     const username = pk.split("@")[0];
 
     const [note, setNote] = useState([]);
+    const [userEmail, setUserEmail] = useState("");
+
     useEffect(() => {
         fetchNotes();
     }, []);
@@ -41,6 +43,7 @@ function ProductDetail() {
         });
 
         const notesFromAPI = apiData.data.getUserCertainNote;
+        console.log(notesFromAPI);
         setNote(notesFromAPI);
     }
 
@@ -48,8 +51,12 @@ function ProductDetail() {
 
     async function checkUserAuthentication() {
         try {
-            await Auth.currentAuthenticatedUser();
-            alert('You are logged in!');
+            const userInfo = await Auth.currentAuthenticatedUser();
+            setUserEmail(userInfo.attributes.email);
+            if(userInfo.attributes.email === pk){
+                alert('You cannot buy your own todo list!');
+                navigate('/');
+            }
         } catch (error) {
             alert('Please log in before you buy!');
             navigate('/signin');
@@ -69,15 +76,18 @@ function ProductDetail() {
                 justifyContent="center"
                 alignItems="center"
             >
-                <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.GSI1PK}</Text>
-                <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.GSI1SK}</Text>
+                {/* <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.GSI1PK}</Text>
+                <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.GSI1SK}</Text> */}
                 <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListCreatedDate}</Text>
+                <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListTitle}</Text>
                 <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListDescription}</Text>
                 {note.ListImage && 
-                <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListImage}</Text>
+                    <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListImage}</Text>
+                }
+                {note.ListPrice &&
+                    <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListPrice}</Text>
                 }
                 {/* <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListStatus}</Text> */}
-                <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListTitle}</Text>
             </Flex>
         </View>
         <Button onClick={checkUserAuthentication}>Buy it</Button><br />

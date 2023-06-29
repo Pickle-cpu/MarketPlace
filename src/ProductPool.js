@@ -27,7 +27,7 @@ function ProductPool() {
   async function fetchNotes() {
     const apiData = await API.graphql({
       query: getNotesByStatus,
-      variables: { status: "closed" },
+      variables: { status: "published" },
     });
     const notesFromAPI = apiData.data.getNotesByStatus.todoList;
     await Promise.all(notesFromAPI.map(async (note) => note));
