@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./NoteForm.css";
 import "@aws-amplify/ui-react/styles.css";
-import { API } from "aws-amplify";
+import { Storage } from 'aws-amplify';
+
 import {
   Button,
   Flex,
@@ -24,6 +25,8 @@ const NoteForm = ({ onSubmit, onCancel, showImage }) => {
     );
     // const [formVisible, setFormVisible] = useState(true);
   
+    const [file, setFile] = useState(null);
+    
     const handleInputChange = (event) => {
       const { name, value } = event.target;
       // 直接把这个匿名函数的值传给了setformdata
@@ -34,8 +37,24 @@ const NoteForm = ({ onSubmit, onCancel, showImage }) => {
       }));
     };
   
-    const handleSubmit = (event) => {
+    // New function for handling file input change
+    const handleFileChange = (event) => {
+      const file = event.target.files[0];
+      setFile(file);
+    };
+
+    const handleSubmit = async (event) => {
       event.preventDefault();
+      
+      // Handle image upload here
+      if (file) {
+        const filename = `${Date.now()}-${file.name}`;
+        const fileUrl = await Storage.put(filename, file, {
+          contentType: file.type,
+        });
+
+        formData.ListImage = fileUrl.key;
+      }
 
       const dataToSubmit = {};
       for (const key in formData) {
@@ -52,6 +71,7 @@ const NoteForm = ({ onSubmit, onCancel, showImage }) => {
         ListImage: '',
         ListTitle: '',
       });
+      setFile(null); // Reset the file input
     };
 
     const handleCancel = () => {
@@ -61,6 +81,7 @@ const NoteForm = ({ onSubmit, onCancel, showImage }) => {
         ListTitle: '',
       });
       // setFormVisible(false);
+      setFile(null); // Reset the file input
       onCancel();
     };
   
@@ -85,12 +106,10 @@ const NoteForm = ({ onSubmit, onCancel, showImage }) => {
         <div>
           <label htmlFor="ListImage">ListImage:</label>
           <input
-            type="text"
+            type="file"
             id="ListImage"
             name="ListImage"
-            value={formData.ListImage}
-            onChange={handleInputChange}
-            // required
+            onChange={handleFileChange}
           />
         </div>
         )}

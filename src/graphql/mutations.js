@@ -1,6 +1,29 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const addNewOrder = /* GraphQL */ `
+  mutation AddNewOrder(
+    $sellerid: String!
+    $buyerid: String!
+    $listid: String!
+    $listprice: String!
+  ) {
+    addNewOrder(
+      sellerid: $sellerid
+      buyerid: $buyerid
+      listid: $listid
+      listprice: $listprice
+    ) {
+      PK
+      SK
+      OrderCreatedDate
+      OrderPrice
+      OrderSellerid
+      OrderBuyerid
+      OrderOfList
+    }
+  }
+`;
 export const addNewUser = /* GraphQL */ `
   mutation AddNewUser(
     $pkid: String!

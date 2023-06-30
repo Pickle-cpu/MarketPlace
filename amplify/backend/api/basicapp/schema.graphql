@@ -201,6 +201,20 @@ type Note {
 	updatedAt: AWSDateTime!
 }
 
+type Order {
+	PK: String!
+	SK: String!
+	OrderCreatedDate: String!
+	OrderPrice: String!
+	OrderSellerid: String!
+	OrderBuyerid: String!
+	OrderOfList: String!
+}
+
+type OrderList {
+	orderList: [Order]
+}
+
 type Todo {
 	PK: String!
 	SK: String!
@@ -233,6 +247,12 @@ type User {
 }
 
 type Mutation {
+	addNewOrder(
+		sellerid: String!,
+		buyerid: String!,
+		listid: String!,
+		listprice: String!
+	): Order
 	addNewUser(pkid: String!, UserEmail: String!, UserSubscriptionStatus: String!): User
 	addNewTodo(
 		id: String!,
@@ -249,7 +269,7 @@ type Mutation {
 		ListDescription: String,
 		ListImage: String,
 		ListStatus: String,
-		ListTitle: String
+		ListTitle: String,
 		ListPrice: String
 	): Boolean
 	updateUser(pkid: String!, UserSubscriptionStatus: String!): User
@@ -259,6 +279,8 @@ type Mutation {
 }
 
 type Query {
+	getOrdersByBuyer(buyerid: String!): OrderList
+	getOrdersBySeller(sellerid: String!): OrderList
 	getUser(pkid: String!): User
 	getUserCertainNote(pkid: String!, skid: String!): Todo
 	getUserNotes(id: String!): TodoList

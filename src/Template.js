@@ -16,6 +16,8 @@ import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import NoteForm from './NoteForm';
 import { Link } from "react-router-dom";
+import { Storage } from 'aws-amplify';
+
 
 function Template() {
   const [userEmail, setUserEmail] = useState("");
@@ -162,7 +164,8 @@ function Template() {
       variables.ListDescription = ListDescription;
     }
     if(ListImage){
-      variables.ListImage = ListImage;
+      const image = await Storage.put(ListTitle, ListImage);
+      formData.ListImage = image.key;
     }
     if(ListTitle){
       variables.ListTitle = ListTitle;
@@ -182,9 +185,6 @@ function Template() {
     });
     // refresh notes after creation
     fetchNotes();
-    // setnotes是异步的 不一定现在能看见
-    // console.log(notes);
-    // hide form after submission
     setShowFormCreate(false);
   };
 
@@ -200,9 +200,16 @@ function Template() {
       query: getUserNotes,
       variables: { id: userEmail },
     });
-    // 为什么是todoList而不是TodoList 因为是根据lambda的定义来的
+    console.log("API data: ", apiData);
     const notesFromAPI = apiData.data.getUserNotes.todoList;
-    await Promise.all(notesFromAPI.map(async (note) => note));
+    console.log(notesFromAPI);  
+    await Promise.all(notesFromAPI.map(async (note) => {
+      if (note.ListImage) {
+        const url = await Storage.get(note.ListImage);
+        note.ListImage = url;
+      }
+      return note;
+    }));
     setNotes(notesFromAPI);
   }
 
@@ -358,49 +365,25 @@ function Template() {
               <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListTitle}</Text>
               <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListDescription}</Text>
               {/* {console.log("hi"+note.ListImage)} */}
-              {note.ListImage && 
-                <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListImage}</Text>
-              }
+              {note.ListImage && (
+                <Image
+                  src={note.ListImage}
+                  alt={`visual aid for ${note.ListImage}`}
+                  style={{ width: 400 }}
+                />
+              )}
               {note.ListPrice &&
                 <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListPrice}</Text>
               }
               <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListStatus}</Text>
               
-              {/* 如果事件处理函数需要接收参数 则应使用匿名函数包裹
-              以确保在事件发生时才调用函数并传递正确的参数
-              如果事件处理函数不需要接收参数 则可以直接将函数引用传递给事件处理程序 无需使用匿名函数包裹
-              当组件进行重新渲染时会检测到事件处理函数的变化
-              如果你直接将函数调用放在onClick 属性中 每次组件重新渲染时都会执行该函数 从而导致无限循环的情况 */}
-              {/* 当你需要将事件对象如event传递给事件处理函数时 你可以使用匿名函数并在参数位置接收事件对象
-              这样做可以让你在事件处理函数中访问事件对象的属性和方法
-              (event) => handleButtonClick(event, param) */}
-              {/* 比如onCancel(param)实际上是将param传给了onCancel然后onCancel内部再对param进行使用 */}
+              
               {!note.ListPrice && (<Button onClick={() => handleButtonClick(note.SK)}>Update</Button>)}
               <Button onClick={() => handleDeleteConfirmation(note.SK)}>Delete</Button>
               {!note.ListPrice && (<Button onClick={() => handlePublishConfirmation(note.SK)}>Publish</Button>)}
             </Flex>
           ))}
-          {/* 这里是对回调函数的使用
-          回调函数意味着我们在template里面当前状态还不一定想要触发handleSubmitForm
-          所以我们传递handleSubmitForm给它的下一任
-          也就是noteform 由它决定是否要触发
-          理解为 onsubmit是一个包括handleSubmitForm的匿名函数且被传到了noteform里
-          使用匿名函数是我们不希望一进入noteform就触发handleSubmitForm
-          而是希望等到需要触发的时候才触发
-          匿名函数之所以能够阻止立即执行是因为将匿名函数作为回调函数传递给事件处理器时
-          实际上只是将函数本身传递给了事件处理器
-          而不是立即执行该函数
-          如果直接放handleSubmitForm(formData)给onsubmit
-          整个函数将在绑定的那一刻马上被执行
-          匿名函数的第一个()里面放东西是表示这个匿名函数有一个参数 */}
-          {/* 如果直接将handleSubmitForm(formData)作为回调函数传递给onSubmit
-          那么在进入NoteForm组件时 会立即执行handleSubmitForm函数
-          并尝试寻找当前的formData值
-          这可能会导致意外的行为因为formData的值可能在这时还未定义或不正确 */}
-
-          {/* onSubmit对应的匿名函数不会第一时间触发是因为他是被传递给了noteform但是还没有在noteform的某个地方被调用
-          noteform页面的setFormData的匿名函数会马上调用是因为它就是在当前页面使用
-          一个匿名函数如果在本页面使用就是直接起作用 但是如果发给了另外的页面 就要等那个页面在某个地方调用了这个函数才起作用 */}
+         
           {showForm && (
             <NoteForm onSubmit={(formData) => handleSubmitForm(formData)} onCancel={handleCancelForm} showImage = {showImage} />
           )}
@@ -426,8 +409,6 @@ function Template() {
             <TextField
               onChange={handleConfirmPublishChange}
               value={publishConfirmText}
-              // placeholder的作用就是如果value对应的那个值目前是空的话就先放placeholder
-              // 它是一个占位符 一旦value有值不为空了就显示value的值
               placeholder="Type your price here"
             />
             <Button onClick={confirmPublishNote}>Confirm Publish</Button>

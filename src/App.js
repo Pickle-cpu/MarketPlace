@@ -9,6 +9,9 @@ import NoteForm from './NoteForm';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import ConfirmSignUp from './ConfirmSignUp';
 import ProductDetail from './ProductDetail';
+import Amplify from 'aws-amplify';
+import { AmplifyS3Storage } from '@aws-amplify/storage';
+import awsconfig from './aws-exports';
 
 function App() {
   return (
