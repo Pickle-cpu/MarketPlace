@@ -175,8 +175,7 @@ function Template() {
       variables.ListDescription = ListDescription;
     }
     if(ListImage){
-      const image = await Storage.put(ListTitle, ListImage);
-      formData.ListImage = image.key;
+      variables.ListImage = ListImage;
     }
     if(ListTitle){
       variables.ListTitle = ListTitle;
@@ -189,7 +188,7 @@ function Template() {
       // variables: {
       //   id: userEmail,
       //   ListDescription: ListDescription,
-      //   ListImage: ListImage,
+      ListImage: formData.ListImage,
       //   ListStatus: "open",
       //   ListTitle: ListTitle
       // },
