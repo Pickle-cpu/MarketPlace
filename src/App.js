@@ -9,9 +9,13 @@ import NoteForm from './NoteForm';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import ConfirmSignUp from './ConfirmSignUp';
 import ProductDetail from './ProductDetail';
+<<<<<<< HEAD
 import Amplify from 'aws-amplify';
 import { AmplifyS3Storage } from '@aws-amplify/storage';
 import awsconfig from './aws-exports';
+=======
+import OrderHistory from './OrderHistory';
+>>>>>>> 27efe824a89e6f4943dc0e6d599e2b6f0fb7a178
 
 function App() {
   return (
@@ -27,6 +31,7 @@ function App() {
             <Route path="/Todo" element={<Todo />} />
             <Route path="/NoteForm" element={<NoteForm />} />
             <Route path="/productdetail" element={<ProductDetail />} />
+            <Route path="/orderhistory" element={<OrderHistory />} />
           </Routes>
         </header>
       </div>

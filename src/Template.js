@@ -16,10 +16,23 @@ import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import NoteForm from './NoteForm';
 import { Link } from "react-router-dom";
+<<<<<<< HEAD
 import { Storage } from 'aws-amplify';
 
+=======
+import { loadStripe } from "@stripe/stripe-js";
+import { useLocation } from 'react-router-dom';
+import OrderHistory from './OrderHistory';
+>>>>>>> 27efe824a89e6f4943dc0e6d599e2b6f0fb7a178
 
 function Template() {
+
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const stripestatus = searchParams.get('stripestatus');
+  // 如果 status 为 null 或 undefined，使用默认值
+  const stripestatusValue = stripestatus || 'default';
+
   const [userEmail, setUserEmail] = useState("");
   const [userSubscriptionStatus,setUserSubscriptionStatus] = useState(false);
   const navigate = useNavigate();
@@ -43,6 +56,9 @@ function Template() {
     if(userEmail !== "") {
       fetchImageEnable();
       fetchNotes();
+      if(stripestatusValue === 'success'){
+        handleSubsciption();
+      }
     }
   }, [userEmail]);
 
@@ -112,7 +128,6 @@ function Template() {
 
   };
 
-  // 不用管
   const handleSubmitFormForPublish = async (formData) => {
     const { noteToPublish, ListStatus, ListPrice } = formData;
     console.log(formData);
@@ -299,12 +314,39 @@ function Template() {
     });
   }
 
+  async function handleStripe() {
+
+    // API ID price_1NOTmcA3JEG5mulpQKawqf83
+    // Publishable Key pk_test_51NCWiuA3JEG5mulpmDfvCJUil9T7U3W2wBFQ6IZuRBK5DoPBAgsiCMSZJpsF0oNmEzNrIHgLMnHF1QpD23Egx6u000Dw4NYNV5
+    // Publishable Key是用于身份验证和与Stripe进行安全通信的公钥
+    // 而Product的API ID 则是用于标识和操作具体产品的唯一标识符
+    const stripe = await loadStripe(
+      'pk_test_51NCWiuA3JEG5mulpmDfvCJUil9T7U3W2wBFQ6IZuRBK5DoPBAgsiCMSZJpsF0oNmEzNrIHgLMnHF1QpD23Egx6u000Dw4NYNV5'
+    );
+    const { error } = await stripe.redirectToCheckout({
+      lineItems: [{ price: 'price_1NOTmcA3JEG5mulpQKawqf83', quantity: 1 }],
+      mode: "subscription",
+      // "http://localhost:3000/Template"
+      successUrl: "http://localhost:3000/Template?stripestatus=success",
+      cancelUrl: "http://localhost:3000/Template?stripestatus=cancel",
+    });
+
+    // if (error) {
+    //   // Handle error
+    //   alert("Subscription with Stripe failed!");
+    //   console.log(error);
+    // } else {
+    //   // Handle success
+    //   alert("Subscription with Stripe completed successfully!");
+    // }
+  }
+
   async function handleSubsciption () {
 
     if(userSubscriptionStatus){
       alert("Please do not repeat subscriptions!");
     }else{
-
+      
       await API.graphql({
         query: updateUser,
         variables: {
@@ -314,7 +356,7 @@ function Template() {
       });
       fetchImageEnable();
       alert("Congrats! You are a premium user now!");
-
+      navigate('/Template');
     }
   }
 
@@ -331,6 +373,7 @@ function Template() {
       });
       fetchImageEnable();
       alert("You have already canceled your premium user experience.");
+      navigate('/Template');
     }else{
       alert("Please do not repeat cancellation!");
     }
@@ -373,14 +416,14 @@ function Template() {
                 />
               )}
               {note.ListPrice &&
-                <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListPrice}</Text>
+                <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>${note.ListPrice}</Text>
               }
               <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListStatus}</Text>
               
               
               {!note.ListPrice && (<Button onClick={() => handleButtonClick(note.SK)}>Update</Button>)}
               <Button onClick={() => handleDeleteConfirmation(note.SK)}>Delete</Button>
-              {!note.ListPrice && (<Button onClick={() => handlePublishConfirmation(note.SK)}>Publish</Button>)}
+              {userSubscriptionStatus && (!note.ListPrice) && (<Button onClick={() => handlePublishConfirmation(note.SK)}>Publish</Button>)}
             </Flex>
           ))}
          
@@ -417,7 +460,13 @@ function Template() {
         )}
       </View>
       <br />
-      <br />
+      {/* <br /> */}
+      <div>
+          <Heading level={2}>Wanna check your order history?</Heading>
+          <Link to="/OrderHistory">Order History</Link>
+      </div>
+      {/* <br />
+      <br /> */}
       {userSubscriptionStatus ? (
         <div>
           <Heading level={2}>Wanna cancel your subscription?</Heading>
@@ -425,13 +474,10 @@ function Template() {
         </div>
       ) : (
         <div>
-          <Heading level={2}>Wanna add images for your todo lists?</Heading>
-          <Button onClick={handleSubsciption}>Subscribe now</Button>
+          <Heading level={2}>Wanna add images and publish your todo lists?</Heading>
+          <Button onClick={handleStripe}>Subscribe now</Button>
         </div>
       )}
-      
-      <br />
-      <br />
       <Link to="/">Back to main page</Link>
     </div>
   );
