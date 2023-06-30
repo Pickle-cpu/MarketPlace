@@ -9,6 +9,7 @@ import NoteForm from './NoteForm';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import ConfirmSignUp from './ConfirmSignUp';
 import ProductDetail from './ProductDetail';
+import OrderHistory from './OrderHistory';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/Todo" element={<Todo />} />
             <Route path="/NoteForm" element={<NoteForm />} />
             <Route path="/productdetail" element={<ProductDetail />} />
+            <Route path="/orderhistory" element={<OrderHistory />} />
           </Routes>
         </header>
       </div>

@@ -15,9 +15,12 @@ import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import { useLocation } from 'react-router-dom';
 import { getUserCertainNote } from './graphql/queries';
+import { addNewOrder } from "./graphql/mutations";
 import { Link } from "react-router-dom";
 
 function ProductDetail() {
+
+    const navigate = useNavigate();
 
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
@@ -27,9 +30,30 @@ function ProductDetail() {
 
     const [note, setNote] = useState([]);
     const [userEmail, setUserEmail] = useState("");
+    const [canbuy, setCanbuy] = useState(true);
+
+    useEffect(() => {
+        if(userEmail === pk){
+            setCanbuy(false);
+        }
+    }, [userEmail]);
 
     useEffect(() => {
         fetchNotes();
+    }, []);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+          try {
+            const userInfo = await Auth.currentAuthenticatedUser();
+            setUserEmail(userInfo.attributes.email);
+          } catch (error) {
+            console.error('error fetching user info:', error);
+            // go back to main page
+            // navigate('/');
+          }
+        };
+        fetchUser();
     }, []);
 
     // function to fetch notes
@@ -47,24 +71,36 @@ function ProductDetail() {
         setNote(notesFromAPI);
     }
 
-    const navigate = useNavigate();
+    const handleAddNewOrder = async () => {
+        
+        await API.graphql({
+          query: addNewOrder,
+          variables: {
+            sellerid: pk,
+		    buyerid: userEmail,
+		    listid: sk,
+		    listprice: note.ListPrice
+          },
+        });
 
-    async function checkUserAuthentication() {
+        alert('You bought this todo list!');
+        navigate('/');
+
+    };
+
+    async function buyOrder() {
         try {
-            const userInfo = await Auth.currentAuthenticatedUser();
-            setUserEmail(userInfo.attributes.email);
-            if(userInfo.attributes.email === pk){
-                alert('You cannot buy your own todo list!');
-                navigate('/');
+
+            if(userEmail === ""){
+                alert("Please sign in to purchase the todo list!");
+                navigate('/signin');
+            }else{
+                handleAddNewOrder();
             }
         } catch (error) {
             alert('Please log in before you buy!');
             navigate('/signin');
         }
-    }
-
-    const handleBuy = async () => {
-
     }
 
     return (
@@ -85,12 +121,13 @@ function ProductDetail() {
                     <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListImage}</Text>
                 }
                 {note.ListPrice &&
-                    <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListPrice}</Text>
+                    <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>${note.ListPrice}</Text>
                 }
                 {/* <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListStatus}</Text> */}
             </Flex>
         </View>
-        <Button onClick={checkUserAuthentication}>Buy it</Button><br />
+        {canbuy && <Button onClick={buyOrder}>Buy it</Button>}
+        <br />
         <Link to="/">Back to main page</Link>
     </div>
     );
