@@ -16,14 +16,10 @@ import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import NoteForm from './NoteForm';
 import { Link } from "react-router-dom";
-<<<<<<< HEAD
 import { Storage } from 'aws-amplify';
-
-=======
 import { loadStripe } from "@stripe/stripe-js";
 import { useLocation } from 'react-router-dom';
 import OrderHistory from './OrderHistory';
->>>>>>> 27efe824a89e6f4943dc0e6d599e2b6f0fb7a178
 
 function Template() {
 
