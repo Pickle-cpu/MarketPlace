@@ -1,4 +1,4 @@
-import { API, Auth } from 'aws-amplify';
+import { API, Auth, Storage } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getNotesByStatus } from './graphql/queries';
@@ -41,8 +41,14 @@ function ProductDetail() {
             skid: sk
         },
         });
-
+    
         const notesFromAPI = apiData.data.getUserCertainNote;
+    
+        if(notesFromAPI.ListImage) {
+            const imageUrl = await Storage.get(notesFromAPI.ListImage);
+            notesFromAPI.ListImage = imageUrl;
+        }
+        
         console.log(notesFromAPI);
         setNote(notesFromAPI);
     }
@@ -81,9 +87,13 @@ function ProductDetail() {
                 <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListCreatedDate}</Text>
                 <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListTitle}</Text>
                 <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListDescription}</Text>
-                {note.ListImage && 
-                    <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListImage}</Text>
-                }
+                {note.ListImage && (
+                    <Image
+                    src={note.ListImage}
+                    alt={`visual aid for ${note.ListImage}`}
+                    style={{ width: 400 }}
+                    />
+                )}
                 {note.ListPrice &&
                     <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListPrice}</Text>
                 }
