@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^14.4.3",
     "aws-amplify": "^5.2.6",
     "aws-sdk": "^2.1408.0",
+    "cypress": "^12.17.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.13.0",
@@ -41,5 +42,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "cypress-mailosaur": "^2.13.0",
+    "typescript": "^5.1.6"
   }
 }

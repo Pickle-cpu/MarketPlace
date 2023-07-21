@@ -1,0 +1,12 @@
+const { defineConfig } = require("cypress");
+
+module.exports = defineConfig({
+  e2e: {
+    setupNodeEvents(on, config) {
+      // implement node event listeners here
+    },
+  },
+  env: {
+    MAILOSAUR_API_KEY: "UqlAs6cBtVwhRyXAC9ooUkSt25jK2c7v",
+  },
+});
