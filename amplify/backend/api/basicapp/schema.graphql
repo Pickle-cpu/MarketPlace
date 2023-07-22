@@ -1,3 +1,8 @@
+type ConnectedAccount {
+	connectedid: String!
+	onboardinglink: String!
+}
+
 input CreateNoteInput {
 	id: ID
 	name: String!
@@ -206,6 +211,8 @@ type Order {
 	SK: String!
 	OrderCreatedDate: String!
 	OrderPrice: String!
+	OrderQuantity: String!
+	OrderStatus: String!
 	OrderSellerid: String!
 	OrderBuyerid: String!
 	OrderOfList: String!
@@ -244,16 +251,22 @@ type User {
 	SK: String!
 	UserEmail: String!
 	UserSubscriptionStatus: String!
+	UserConnectedAccountUrl: String!
+	UserConnectedAccountExpiresTime: String!
 }
 
 type Mutation {
+	stripeAddNewConnnectedUser(pkid: String!, UserEmail: String!, UserSubscriptionStatus: String!): ConnectedAccount!
+	deleteOrder(sellerid: String!, buyerid: String!, createdDate: String!): Boolean
 	addNewOrder(
 		sellerid: String!,
 		buyerid: String!,
 		listid: String!,
-		listprice: String!
+		listprice: String!,
+		quantity: String!,
+		orderstatus: String!
 	): Order
-	addNewUser(pkid: String!, UserEmail: String!, UserSubscriptionStatus: String!): User
+	# addNewUser(pkid: String!, UserEmail: String!, UserSubscriptionStatus: String!): User
 	addNewTodo(
 		id: String!,
 		ListDescription: String,
@@ -272,7 +285,12 @@ type Mutation {
 		ListTitle: String,
 		ListPrice: String
 	): Boolean
-	updateUser(pkid: String!, UserSubscriptionStatus: String!): User
+	updateUser(
+		pkid: String!,
+		UserSubscriptionStatus: String,
+		UserConnectedAccountUrl: String,
+		UserConnectedAccountExpiresTime: String
+	): Boolean
 	createNote(input: CreateNoteInput!, condition: ModelNoteConditionInput): Note
 	updateNote(input: UpdateNoteInput!, condition: ModelNoteConditionInput): Note
 	deleteNote(input: DeleteNoteInput!, condition: ModelNoteConditionInput): Note

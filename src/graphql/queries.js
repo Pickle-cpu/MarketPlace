@@ -9,10 +9,14 @@ export const getOrdersByBuyer = /* GraphQL */ `
         SK
         OrderCreatedDate
         OrderPrice
+        OrderQuantity
+        OrderStatus
         OrderSellerid
         OrderBuyerid
         OrderOfList
+        __typename
       }
+      __typename
     }
   }
 `;
@@ -24,10 +28,14 @@ export const getOrdersBySeller = /* GraphQL */ `
         SK
         OrderCreatedDate
         OrderPrice
+        OrderQuantity
+        OrderStatus
         OrderSellerid
         OrderBuyerid
         OrderOfList
+        __typename
       }
+      __typename
     }
   }
 `;
@@ -38,6 +46,9 @@ export const getUser = /* GraphQL */ `
       SK
       UserEmail
       UserSubscriptionStatus
+      UserConnectedAccountUrl
+      UserConnectedAccountExpiresTime
+      __typename
     }
   }
 `;
@@ -54,6 +65,7 @@ export const getUserCertainNote = /* GraphQL */ `
       ListStatus
       ListTitle
       ListPrice
+      __typename
     }
   }
 `;
@@ -71,7 +83,9 @@ export const getUserNotes = /* GraphQL */ `
         ListStatus
         ListTitle
         ListPrice
+        __typename
       }
+      __typename
     }
   }
 `;
@@ -89,7 +103,9 @@ export const getNotesByStatus = /* GraphQL */ `
         ListStatus
         ListTitle
         ListPrice
+        __typename
       }
+      __typename
     }
   }
 `;
@@ -102,6 +118,7 @@ export const getNote = /* GraphQL */ `
       image
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -119,8 +136,10 @@ export const listNotes = /* GraphQL */ `
         image
         createdAt
         updatedAt
+        __typename
       }
       nextToken
+      __typename
     }
   }
 `;
