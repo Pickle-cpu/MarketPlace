@@ -9,6 +9,8 @@ export const getOrdersByBuyer = /* GraphQL */ `
         SK
         OrderCreatedDate
         OrderPrice
+        OrderQuantity
+        OrderStatus
         OrderSellerid
         OrderBuyerid
         OrderOfList
@@ -24,6 +26,8 @@ export const getOrdersBySeller = /* GraphQL */ `
         SK
         OrderCreatedDate
         OrderPrice
+        OrderQuantity
+        OrderStatus
         OrderSellerid
         OrderBuyerid
         OrderOfList

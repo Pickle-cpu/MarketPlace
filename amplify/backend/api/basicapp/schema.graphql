@@ -1,3 +1,8 @@
+type ConnectedAccount {
+	connectedid: String!
+	onboardinglink: String!
+}
+
 input CreateNoteInput {
 	id: ID
 	name: String!
@@ -247,6 +252,8 @@ type User {
 }
 
 type Mutation {
+	stripeAddNewConnnectedUser(pkid: String!, UserEmail: String!, UserSubscriptionStatus: String!): ConnectedAccount!
+	deleteOrder(sellerid: String!, buyerid: String!, createdDate: String!): Boolean
 	addNewOrder(
 		sellerid: String!,
 		buyerid: String!,

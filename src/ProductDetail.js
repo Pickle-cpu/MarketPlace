@@ -31,6 +31,8 @@ function ProductDetail() {
     const [note, setNote] = useState([]);
     const [userEmail, setUserEmail] = useState("");
     const [canbuy, setCanbuy] = useState(true);
+    const [quantity, setQuantity] = useState(1);
+
 
     useEffect(() => {
         if(userEmail === pk){
@@ -78,14 +80,19 @@ function ProductDetail() {
     }
 
     const handleAddNewOrder = async () => {
-        
+        if (isNaN(quantity) || quantity < 1) {
+            alert('Please enter a valid quantity.');
+            return;
+        }
         await API.graphql({
           query: addNewOrder,
           variables: {
             sellerid: pk,
 		    buyerid: userEmail,
 		    listid: sk,
-		    listprice: note.ListPrice
+		    listprice: note.ListPrice,
+            quantity : quantity,
+            orderstatus : "ordered"
           },
         });
 
@@ -136,6 +143,16 @@ function ProductDetail() {
                 {/* <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListStatus}</Text> */}
             </Flex>
         </View>
+        {canbuy && 
+            <TextField
+                type="number"
+                min="1"
+                max="100"
+                value={quantity}
+                onChange={e => setQuantity(e.target.value)}
+                placeholder="Enter quantity"
+            />
+        }
         {canbuy && <Button onClick={buyOrder}>Buy it</Button>}
         <br />
         <Link to="/">Back to main page</Link>

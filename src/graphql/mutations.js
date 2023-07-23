@@ -1,23 +1,58 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const stripeAddNewConnnectedUser = /* GraphQL */ `
+  mutation StripeAddNewConnnectedUser(
+    $pkid: String!
+    $UserEmail: String!
+    $UserSubscriptionStatus: String!
+  ) {
+    stripeAddNewConnnectedUser(
+      pkid: $pkid
+      UserEmail: $UserEmail
+      UserSubscriptionStatus: $UserSubscriptionStatus
+    ) {
+      connectedid
+      onboardinglink
+    }
+  }
+`;
+export const deleteOrder = /* GraphQL */ `
+  mutation DeleteOrder(
+    $sellerid: String!
+    $buyerid: String!
+    $createdDate: String!
+  ) {
+    deleteOrder(
+      sellerid: $sellerid
+      buyerid: $buyerid
+      createdDate: $createdDate
+    )
+  }
+`;
 export const addNewOrder = /* GraphQL */ `
   mutation AddNewOrder(
     $sellerid: String!
     $buyerid: String!
     $listid: String!
     $listprice: String!
+    $quantity: String!
+    $orderstatus: String!
   ) {
     addNewOrder(
       sellerid: $sellerid
       buyerid: $buyerid
       listid: $listid
       listprice: $listprice
+      quantity: $quantity
+      orderstatus: $orderstatus
     ) {
       PK
       SK
       OrderCreatedDate
       OrderPrice
+      OrderQuantity
+      OrderStatus
       OrderSellerid
       OrderBuyerid
       OrderOfList
