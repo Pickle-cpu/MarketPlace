@@ -1,3 +1,8 @@
+type BuyAndSplitResult {
+	OrderCheckoutSessionID: String!
+	OrderCheckoutSessionURL: String!
+}
+
 type ConnectedAccount {
 	connectedid: String!
 	onboardinglink: String!
@@ -216,6 +221,8 @@ type Order {
 	OrderSellerid: String!
 	OrderBuyerid: String!
 	OrderOfList: String!
+	OrderCheckoutSessionID: String!
+	OrderCheckoutSessionURL: String!
 }
 
 type OrderList {
@@ -251,12 +258,30 @@ type User {
 	SK: String!
 	UserEmail: String!
 	UserSubscriptionStatus: String!
+	UserConnectedAccountID: String!
 	UserConnectedAccountUrl: String!
 	UserConnectedAccountExpiresTime: String!
 }
 
 type Mutation {
+	stripeBuyAndSplit(
+		connectedAccountID: String!,
+		buyPrice: String!,
+		buyQuantity: String!,
+		buyProductName: String!,
+		sellerid: String!,
+		buyerid: String!,
+		createdDate: String!
+	): BuyAndSplitResult!
 	stripeAddNewConnnectedUser(pkid: String!, UserEmail: String!, UserSubscriptionStatus: String!): ConnectedAccount!
+	updateOrder(
+		sellerid: String!,
+		buyerid: String!,
+		createdDate: String!,
+		OrderStatus: String,
+		OrderCheckoutSessionID: String,
+		OrderCheckoutSessionURL: String
+	): Boolean
 	deleteOrder(sellerid: String!, buyerid: String!, createdDate: String!): Boolean
 	addNewOrder(
 		sellerid: String!,
@@ -266,7 +291,6 @@ type Mutation {
 		quantity: String!,
 		orderstatus: String!
 	): Order
-	# addNewUser(pkid: String!, UserEmail: String!, UserSubscriptionStatus: String!): User
 	addNewTodo(
 		id: String!,
 		ListDescription: String,

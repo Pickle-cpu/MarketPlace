@@ -322,8 +322,10 @@ function Template() {
       lineItems: [{ price: 'price_1NOTmcA3JEG5mulpQKawqf83', quantity: 1 }],
       mode: "subscription",
       // "http://localhost:3000/Template"
-      successUrl: "https://main.dk4ni8te7mdw5.amplifyapp.com/Template?stripestatus=success",
-      cancelUrl: "https://main.dk4ni8te7mdw5.amplifyapp.com/Template?stripestatus=cancel",
+      successUrl: "http://localhost:3000/Template?stripestatus=success",
+      cancelUrl: "http://localhost:3000/Template?stripestatus=cancel",
+      // successUrl: "https://main.dk4ni8te7mdw5.amplifyapp.com/Template?stripestatus=success",
+      // cancelUrl: "https://main.dk4ni8te7mdw5.amplifyapp.com/Template?stripestatus=cancel",
     });
 
     // if (error) {

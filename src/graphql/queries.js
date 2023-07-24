@@ -14,6 +14,8 @@ export const getOrdersByBuyer = /* GraphQL */ `
         OrderSellerid
         OrderBuyerid
         OrderOfList
+        OrderCheckoutSessionID
+        OrderCheckoutSessionURL
         __typename
       }
       __typename
@@ -33,6 +35,8 @@ export const getOrdersBySeller = /* GraphQL */ `
         OrderSellerid
         OrderBuyerid
         OrderOfList
+        OrderCheckoutSessionID
+        OrderCheckoutSessionURL
         __typename
       }
       __typename
@@ -46,6 +50,7 @@ export const getUser = /* GraphQL */ `
       SK
       UserEmail
       UserSubscriptionStatus
+      UserConnectedAccountID
       UserConnectedAccountUrl
       UserConnectedAccountExpiresTime
       __typename

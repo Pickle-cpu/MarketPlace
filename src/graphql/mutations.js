@@ -1,6 +1,31 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const stripeBuyAndSplit = /* GraphQL */ `
+  mutation StripeBuyAndSplit(
+    $connectedAccountID: String!
+    $buyPrice: String!
+    $buyQuantity: String!
+    $buyProductName: String!
+    $sellerid: String!
+    $buyerid: String!
+    $createdDate: String!
+  ) {
+    stripeBuyAndSplit(
+      connectedAccountID: $connectedAccountID
+      buyPrice: $buyPrice
+      buyQuantity: $buyQuantity
+      buyProductName: $buyProductName
+      sellerid: $sellerid
+      buyerid: $buyerid
+      createdDate: $createdDate
+    ) {
+      OrderCheckoutSessionID
+      OrderCheckoutSessionURL
+      __typename
+    }
+  }
+`;
 export const stripeAddNewConnnectedUser = /* GraphQL */ `
   mutation StripeAddNewConnnectedUser(
     $pkid: String!
@@ -16,6 +41,25 @@ export const stripeAddNewConnnectedUser = /* GraphQL */ `
       onboardinglink
       __typename
     }
+  }
+`;
+export const updateOrder = /* GraphQL */ `
+  mutation UpdateOrder(
+    $sellerid: String!
+    $buyerid: String!
+    $createdDate: String!
+    $OrderStatus: String
+    $OrderCheckoutSessionID: String
+    $OrderCheckoutSessionURL: String
+  ) {
+    updateOrder(
+      sellerid: $sellerid
+      buyerid: $buyerid
+      createdDate: $createdDate
+      OrderStatus: $OrderStatus
+      OrderCheckoutSessionID: $OrderCheckoutSessionID
+      OrderCheckoutSessionURL: $OrderCheckoutSessionURL
+    )
   }
 `;
 export const deleteOrder = /* GraphQL */ `
@@ -57,6 +101,8 @@ export const addNewOrder = /* GraphQL */ `
       OrderSellerid
       OrderBuyerid
       OrderOfList
+      OrderCheckoutSessionID
+      OrderCheckoutSessionURL
       __typename
     }
   }

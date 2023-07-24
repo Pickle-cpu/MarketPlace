@@ -14,8 +14,8 @@ import {
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import { useLocation } from 'react-router-dom';
-import { getUserCertainNote } from './graphql/queries';
-import { addNewOrder } from "./graphql/mutations";
+import { getUser, getUserCertainNote } from './graphql/queries';
+import { addNewOrder, stripeBuyAndSplit } from "./graphql/mutations";
 import { Link } from "react-router-dom";
 
 function ProductDetail() {
@@ -31,6 +31,8 @@ function ProductDetail() {
     const [note, setNote] = useState([]);
     const [userEmail, setUserEmail] = useState("");
     const [canbuy, setCanbuy] = useState(true);
+    const [quantity, setQuantity] = useState(1);
+
 
     useEffect(() => {
         if(userEmail === pk){
@@ -78,19 +80,52 @@ function ProductDetail() {
     }
 
     const handleAddNewOrder = async () => {
-        
-        await API.graphql({
+        if (isNaN(quantity) || quantity < 1) {
+            alert('Please enter a valid quantity.');
+            return;
+        }
+
+        const apiDataUser = await API.graphql({
+            query: getUser,
+            variables: { pkid: pk },
+          });
+        const notesFromAPIUser = apiDataUser.data.getUser;
+        console.log(notesFromAPIUser);
+
+        const apiDataOrder = await API.graphql({
           query: addNewOrder,
           variables: {
             sellerid: pk,
 		    buyerid: userEmail,
 		    listid: sk,
-		    listprice: note.ListPrice
+		    listprice: note.ListPrice,
+            quantity : quantity,
+            orderstatus : "created"
           },
         });
+        const notesFromAPIOrder = apiDataOrder.data.addNewOrder;
+        console.log(notesFromAPIOrder);
+        console.log(userEmail);
 
-        alert('You bought this todo list!');
-        navigate('/');
+
+        const apiDataBuyAndSplit = await API.graphql({
+            query: stripeBuyAndSplit,
+            variables: {
+                connectedAccountID: notesFromAPIUser.UserConnectedAccountID,
+                buyPrice: note.ListPrice,
+                buyQuantity: quantity,
+                buyProductName: note.ListTitle,
+                sellerid: pk,
+                buyerid: userEmail,
+                createdDate: notesFromAPIOrder.OrderCreatedDate
+            },
+          });
+        const notesFromAPIBuyAndSplit = apiDataBuyAndSplit.data.stripeBuyAndSplit;
+        console.log(notesFromAPIBuyAndSplit);
+        window.location.href = notesFromAPIBuyAndSplit.OrderCheckoutSessionURL; // Redirect the user to the payment URL
+
+        // alert('You bought this todo list!');
+        // navigate('/');
 
     };
 
@@ -136,6 +171,16 @@ function ProductDetail() {
                 {/* <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListStatus}</Text> */}
             </Flex>
         </View>
+        {canbuy && 
+            <TextField
+                type="number"
+                min="1"
+                max="100"
+                value={quantity}
+                onChange={e => setQuantity(e.target.value)}
+                placeholder="Enter quantity"
+            />
+        }
         {canbuy && <Button onClick={buyOrder}>Buy it</Button>}
         <br />
         <Link to="/">Back to main page</Link>
