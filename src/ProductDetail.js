@@ -14,8 +14,8 @@ import {
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import { useLocation } from 'react-router-dom';
-import { getUserCertainNote } from './graphql/queries';
-import { addNewOrder } from "./graphql/mutations";
+import { getUser, getUserCertainNote } from './graphql/queries';
+import { addNewOrder, stripeBuyAndSplit } from "./graphql/mutations";
 import { Link } from "react-router-dom";
 
 function ProductDetail() {
@@ -71,8 +71,15 @@ function ProductDetail() {
         const notesFromAPI = apiData.data.getUserCertainNote;
     
         if(notesFromAPI.ListImage) {
-            const imageUrl = await Storage.get(notesFromAPI.ListImage);
-            notesFromAPI.ListImage = imageUrl;
+            // const imageUrl = await Storage.get(notesFromAPI.ListImage);
+            // notesFromAPI.ListImage = imageUrl;
+            try {
+                const imageUrl = await Storage.get(notesFromAPI.ListImage);
+                notesFromAPI.ListImage = imageUrl;
+            } catch(error) {
+                console.error('Error when retrieving image:', error);
+                // handle error, for example set the imageUrl to a default one
+            }
         }
         
         console.log(notesFromAPI);
@@ -84,7 +91,15 @@ function ProductDetail() {
             alert('Please enter a valid quantity.');
             return;
         }
-        await API.graphql({
+
+        const apiDataUser = await API.graphql({
+            query: getUser,
+            variables: { pkid: pk },
+          });
+        const notesFromAPIUser = apiDataUser.data.getUser;
+        console.log(notesFromAPIUser);
+
+        const apiDataOrder = await API.graphql({
           query: addNewOrder,
           variables: {
             sellerid: pk,
@@ -92,12 +107,32 @@ function ProductDetail() {
 		    listid: sk,
 		    listprice: note.ListPrice,
             quantity : quantity,
-            orderstatus : "ordered"
+            orderstatus : "created"
           },
         });
+        const notesFromAPIOrder = apiDataOrder.data.addNewOrder;
+        console.log(notesFromAPIOrder);
+        console.log(userEmail);
 
-        alert('You bought this todo list!');
-        navigate('/');
+
+        const apiDataBuyAndSplit = await API.graphql({
+            query: stripeBuyAndSplit,
+            variables: {
+                connectedAccountID: notesFromAPIUser.UserConnectedAccountID,
+                buyPrice: note.ListPrice,
+                buyQuantity: quantity,
+                buyProductName: note.ListTitle,
+                sellerid: pk,
+                buyerid: userEmail,
+                createdDate: notesFromAPIOrder.OrderCreatedDate
+            },
+          });
+        const notesFromAPIBuyAndSplit = apiDataBuyAndSplit.data.stripeBuyAndSplit;
+        console.log(notesFromAPIBuyAndSplit);
+        window.location.href = notesFromAPIBuyAndSplit.OrderCheckoutSessionURL; // Redirect the user to the payment URL
+
+        // alert('You bought this todo list!');
+        // navigate('/');
 
     };
 

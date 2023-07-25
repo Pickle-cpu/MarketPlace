@@ -1,3 +1,8 @@
+type BuyAndSplitResult {
+	OrderCheckoutSessionID: String!
+	OrderCheckoutSessionURL: String!
+}
+
 type ConnectedAccount {
 	connectedid: String!
 	onboardinglink: String!
@@ -211,9 +216,14 @@ type Order {
 	SK: String!
 	OrderCreatedDate: String!
 	OrderPrice: String!
+	OrderQuantity: String!
+	OrderStatus: String!
 	OrderSellerid: String!
 	OrderBuyerid: String!
 	OrderOfList: String!
+	OrderCheckoutSessionID: String!
+	OrderCheckoutSessionURL: String!
+	OrderCheckoutSessionPaymentIntent: String!
 }
 
 type OrderList {
@@ -249,18 +259,41 @@ type User {
 	SK: String!
 	UserEmail: String!
 	UserSubscriptionStatus: String!
+	UserConnectedAccountID: String!
+	UserConnectedAccountUrl: String!
+	UserConnectedAccountExpiresTime: String!
+	UserConnectedAccountStatus: String!
 }
 
 type Mutation {
+	stripeBuyAndSplit(
+		connectedAccountID: String!,
+		buyPrice: String!,
+		buyQuantity: String!,
+		buyProductName: String!,
+		sellerid: String!,
+		buyerid: String!,
+		createdDate: String!
+	): BuyAndSplitResult!
 	stripeAddNewConnnectedUser(pkid: String!, UserEmail: String!, UserSubscriptionStatus: String!): ConnectedAccount!
+	updateOrder(
+		sellerid: String!,
+		buyerid: String!,
+		createdDate: String!,
+		OrderStatus: String,
+		OrderCheckoutSessionID: String,
+		OrderCheckoutSessionURL: String,
+		OrderCheckoutSessionPaymentIntent: String
+	): Boolean
 	deleteOrder(sellerid: String!, buyerid: String!, createdDate: String!): Boolean
 	addNewOrder(
 		sellerid: String!,
 		buyerid: String!,
 		listid: String!,
-		listprice: String!
+		listprice: String!,
+		quantity: String!,
+		orderstatus: String!
 	): Order
-	addNewUser(pkid: String!, UserEmail: String!, UserSubscriptionStatus: String!): User
 	addNewTodo(
 		id: String!,
 		ListDescription: String,
@@ -279,7 +312,13 @@ type Mutation {
 		ListTitle: String,
 		ListPrice: String
 	): Boolean
-	updateUser(pkid: String!, UserSubscriptionStatus: String!): User
+	updateUser(
+		pkid: String!,
+		UserSubscriptionStatus: String,
+		UserConnectedAccountUrl: String,
+		UserConnectedAccountExpiresTime: String,
+		UserConnectedAccountStatus: String
+	): Boolean
 	createNote(input: CreateNoteInput!, condition: ModelNoteConditionInput): Note
 	updateNote(input: UpdateNoteInput!, condition: ModelNoteConditionInput): Note
 	deleteNote(input: DeleteNoteInput!, condition: ModelNoteConditionInput): Note

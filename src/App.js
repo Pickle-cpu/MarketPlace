@@ -29,7 +29,7 @@ function App() {
             <Route path="/NoteForm" element={<NoteForm />} />
             <Route path="/productdetail" element={<ProductDetail />} />
             <Route path="/orderhistory" element={<OrderHistory />} />
-            <Route path="/orderhistory" element={<OrderHistory />} />
+            {/* <Route path="/orderhistory" element={<OrderHistory />} /> */}
           </Routes>
         </header>
       </div>

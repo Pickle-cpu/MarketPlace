@@ -1,6 +1,31 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const stripeBuyAndSplit = /* GraphQL */ `
+  mutation StripeBuyAndSplit(
+    $connectedAccountID: String!
+    $buyPrice: String!
+    $buyQuantity: String!
+    $buyProductName: String!
+    $sellerid: String!
+    $buyerid: String!
+    $createdDate: String!
+  ) {
+    stripeBuyAndSplit(
+      connectedAccountID: $connectedAccountID
+      buyPrice: $buyPrice
+      buyQuantity: $buyQuantity
+      buyProductName: $buyProductName
+      sellerid: $sellerid
+      buyerid: $buyerid
+      createdDate: $createdDate
+    ) {
+      OrderCheckoutSessionID
+      OrderCheckoutSessionURL
+      __typename
+    }
+  }
+`;
 export const stripeAddNewConnnectedUser = /* GraphQL */ `
   mutation StripeAddNewConnnectedUser(
     $pkid: String!
@@ -14,7 +39,29 @@ export const stripeAddNewConnnectedUser = /* GraphQL */ `
     ) {
       connectedid
       onboardinglink
+      __typename
     }
+  }
+`;
+export const updateOrder = /* GraphQL */ `
+  mutation UpdateOrder(
+    $sellerid: String!
+    $buyerid: String!
+    $createdDate: String!
+    $OrderStatus: String
+    $OrderCheckoutSessionID: String
+    $OrderCheckoutSessionURL: String
+    $OrderCheckoutSessionPaymentIntent: String
+  ) {
+    updateOrder(
+      sellerid: $sellerid
+      buyerid: $buyerid
+      createdDate: $createdDate
+      OrderStatus: $OrderStatus
+      OrderCheckoutSessionID: $OrderCheckoutSessionID
+      OrderCheckoutSessionURL: $OrderCheckoutSessionURL
+      OrderCheckoutSessionPaymentIntent: $OrderCheckoutSessionPaymentIntent
+    )
   }
 `;
 export const deleteOrder = /* GraphQL */ `
@@ -56,24 +103,10 @@ export const addNewOrder = /* GraphQL */ `
       OrderSellerid
       OrderBuyerid
       OrderOfList
-    }
-  }
-`;
-export const addNewUser = /* GraphQL */ `
-  mutation AddNewUser(
-    $pkid: String!
-    $UserEmail: String!
-    $UserSubscriptionStatus: String!
-  ) {
-    addNewUser(
-      pkid: $pkid
-      UserEmail: $UserEmail
-      UserSubscriptionStatus: $UserSubscriptionStatus
-    ) {
-      PK
-      SK
-      UserEmail
-      UserSubscriptionStatus
+      OrderCheckoutSessionID
+      OrderCheckoutSessionURL
+      OrderCheckoutSessionPaymentIntent
+      __typename
     }
   }
 `;
@@ -123,13 +156,20 @@ export const updateTodo = /* GraphQL */ `
   }
 `;
 export const updateUser = /* GraphQL */ `
-  mutation UpdateUser($pkid: String!, $UserSubscriptionStatus: String!) {
-    updateUser(pkid: $pkid, UserSubscriptionStatus: $UserSubscriptionStatus) {
-      PK
-      SK
-      UserEmail
-      UserSubscriptionStatus
-    }
+  mutation UpdateUser(
+    $pkid: String!
+    $UserSubscriptionStatus: String
+    $UserConnectedAccountUrl: String
+    $UserConnectedAccountExpiresTime: String
+    $UserConnectedAccountStatus: String
+  ) {
+    updateUser(
+      pkid: $pkid
+      UserSubscriptionStatus: $UserSubscriptionStatus
+      UserConnectedAccountUrl: $UserConnectedAccountUrl
+      UserConnectedAccountExpiresTime: $UserConnectedAccountExpiresTime
+      UserConnectedAccountStatus: $UserConnectedAccountStatus
+    )
   }
 `;
 export const createNote = /* GraphQL */ `
@@ -144,6 +184,7 @@ export const createNote = /* GraphQL */ `
       image
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -159,6 +200,7 @@ export const updateNote = /* GraphQL */ `
       image
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -174,6 +216,7 @@ export const deleteNote = /* GraphQL */ `
       image
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
