@@ -15,7 +15,7 @@ import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import { Link } from "react-router-dom";
 import { getOrdersByBuyer, getOrdersBySeller } from './graphql/queries';
-import { deleteOrder, updateOrder } from "./graphql/mutations";
+import { deleteOrder, stripePaymentRefund, updateOrder } from "./graphql/mutations";
 
 
 function OrderHistory() {
@@ -109,24 +109,31 @@ function OrderHistory() {
         setConfirming(note);
     }
 
-    async function refundPayment(paymentIntentId, amount = null) {
-        try {
-          const refund = await stripe.refunds.create({
-            payment_intent: paymentIntentId,
-            amount: amount,  // remove this line if you want to refund the whole amount
-          });
-          return refund;
-        } catch (error) {
-          console.error('Error refunding the payment:', error);
-          throw error;
-        }
-    }
+    // async function refundPayment(paymentIntentId, amount = null) {
+    //     try {
+    //       const refund = await stripe.refunds.create({
+    //         payment_intent: paymentIntentId,
+    //         // amount: amount,  // remove this line if you want to refund the whole amount
+    //       });
+    //       return refund;
+    //     } catch (error) {
+    //       console.error('Error refunding the payment:', error);
+    //       throw error;
+    //     }
+    // }
     
     async function confirmCancelOrder() {
         if (confirmation.toLowerCase() === "confirm") {
             // Proceed with Stripe refund and order cancellation
+            console.log(confirming.OrderCheckoutSessionPaymentIntent);
+            console.log(typeof confirming.OrderCheckoutSessionPaymentIntent);
             try {
-                const refundResult = await refundPayment(confirming.PaymentIntentId);
+                const refundResult = await API.graphql({
+                    query: stripePaymentRefund,
+                    variables: {
+                        paymentIntent : confirming.OrderCheckoutSessionPaymentIntent
+                    },
+                });
                 if (refundResult) {
                     await cancelOrder(confirming.OrderSellerid.substring(2), confirming.OrderBuyerid.substring(2), confirming.OrderCreatedDate);
                 } else {
