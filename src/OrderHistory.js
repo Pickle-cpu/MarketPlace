@@ -134,11 +134,11 @@ function OrderHistory() {
                         paymentIntent : confirming.OrderCheckoutSessionPaymentIntent
                     },
                 });
-                if (refundResult) {
-                    await cancelOrder(confirming.OrderSellerid.substring(2), confirming.OrderBuyerid.substring(2), confirming.OrderCreatedDate);
-                } else {
-                    console.error('Refund failed:', refundResult);
-                }
+                // if (refundResult) {
+                //     await cancelOrder(confirming.OrderSellerid.substring(2), confirming.OrderBuyerid.substring(2), confirming.OrderCreatedDate);
+                // } else {
+                //     console.error('Refund failed:', refundResult);
+                // }
             } catch (error) {
                 console.error('Error cancelling order:', error);
             }
