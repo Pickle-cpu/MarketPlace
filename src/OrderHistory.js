@@ -26,16 +26,16 @@ function OrderHistory() {
     const [buyernotes, setBuyerNotes] = useState([]);
     const [confirmation, setConfirmation] = useState("");
     const [confirming, setConfirming] = useState(false);
-    const [shipstatus, setShipStatus] = useState(false);
+    // const [shipstatus, setShipStatus] = useState(false);
     const stripe = require('stripe')('pk_test_51NCWiuA3JEG5mulpmDfvCJUil9T7U3W2wBFQ6IZuRBK5DoPBAgsiCMSZJpsF0oNmEzNrIHgLMnHF1QpD23Egx6u000Dw4NYNV5');
 
 
-    useEffect(() => {
-        if(userEmail !== "") {
-          fetchSellerNotes();
-          fetchBuyerNotes();
-        }
-    }, [shipstatus]);
+    // useEffect(() => {
+    //     if(userEmail !== "") {
+    //       fetchSellerNotes();
+    //       fetchBuyerNotes();
+    //     }
+    // }, [shipstatus]);
     
     useEffect(() => {
         if(userEmail !== "") {
@@ -159,8 +159,8 @@ function OrderHistory() {
               OrderStatus: "shipped"
             },
         });
-        setShipStatus(true);
         alert("Shipped!");
+        navigate(`/orderhistory`);
     }
 
     return (
@@ -188,7 +188,7 @@ function OrderHistory() {
                         <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.OrderQuantity}</Text>
                         <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.OrderStatus}</Text>
                         <Button onClick={() => browseOrder(note.OrderSellerid.substring(2),note.OrderOfList.substring(2))}>Browse</Button><br />
-                        {!shipstatus && (<Button onClick={() => shipOrder(note.OrderSellerid.substring(2),note.OrderBuyerid.substring(2),note.OrderCreatedDate)}>Ship</Button>)}
+                        {note.OrderStatus === "paid" && (<Button onClick={() => shipOrder(note.OrderSellerid.substring(2),note.OrderBuyerid.substring(2),note.OrderCreatedDate)}>Ship</Button>)}
                         <br />
                         </Flex>
                     ))}
