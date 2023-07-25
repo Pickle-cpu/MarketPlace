@@ -221,15 +221,19 @@ function OrderHistory() {
                         <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.OrderQuantity}</Text>
                         <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.OrderStatus}</Text>
                         <Button onClick={() => browseOrder(note.OrderSellerid.substring(2),note.OrderOfList.substring(2))}>Browse</Button><br />
-                        <Button onClick={() => initiateCancelOrder(note)}>Cancel</Button>
-                        {confirming === note && (
+                        {note.OrderStatus !== 'shipped' && note.OrderStatus !== 'refunded' && (
                             <>
-                                <TextField
-                                    value={confirmation}
-                                    onChange={e => setConfirmation(e.target.value)}
-                                    placeholder="Type 'confirm' to cancel"
-                                />
-                                <Button onClick={confirmCancelOrder}>Confirm Cancel</Button>
+                                <Button onClick={() => initiateCancelOrder(note)}>Cancel</Button>
+                                {confirming === note && (
+                                    <>
+                                        <TextField
+                                            value={confirmation}
+                                            onChange={e => setConfirmation(e.target.value)}
+                                            placeholder="Type 'confirm' to cancel"
+                                        />
+                                        <Button onClick={confirmCancelOrder}>Confirm Cancel</Button>
+                                    </>
+                                )}
                             </>
                         )}
                         </Flex>
