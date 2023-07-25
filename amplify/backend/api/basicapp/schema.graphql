@@ -223,6 +223,7 @@ type Order {
 	OrderOfList: String!
 	OrderCheckoutSessionID: String!
 	OrderCheckoutSessionURL: String!
+	OrderCheckoutSessionPaymentIntent: String!
 }
 
 type OrderList {
@@ -261,6 +262,7 @@ type User {
 	UserConnectedAccountID: String!
 	UserConnectedAccountUrl: String!
 	UserConnectedAccountExpiresTime: String!
+	UserConnectedAccountStatus: String!
 }
 
 type Mutation {
@@ -280,7 +282,8 @@ type Mutation {
 		createdDate: String!,
 		OrderStatus: String,
 		OrderCheckoutSessionID: String,
-		OrderCheckoutSessionURL: String
+		OrderCheckoutSessionURL: String,
+		OrderCheckoutSessionPaymentIntent: String
 	): Boolean
 	deleteOrder(sellerid: String!, buyerid: String!, createdDate: String!): Boolean
 	addNewOrder(
@@ -313,7 +316,8 @@ type Mutation {
 		pkid: String!,
 		UserSubscriptionStatus: String,
 		UserConnectedAccountUrl: String,
-		UserConnectedAccountExpiresTime: String
+		UserConnectedAccountExpiresTime: String,
+		UserConnectedAccountStatus: String
 	): Boolean
 	createNote(input: CreateNoteInput!, condition: ModelNoteConditionInput): Note
 	updateNote(input: UpdateNoteInput!, condition: ModelNoteConditionInput): Note

@@ -71,8 +71,15 @@ function ProductDetail() {
         const notesFromAPI = apiData.data.getUserCertainNote;
     
         if(notesFromAPI.ListImage) {
-            const imageUrl = await Storage.get(notesFromAPI.ListImage);
-            notesFromAPI.ListImage = imageUrl;
+            // const imageUrl = await Storage.get(notesFromAPI.ListImage);
+            // notesFromAPI.ListImage = imageUrl;
+            try {
+                const imageUrl = await Storage.get(notesFromAPI.ListImage);
+                notesFromAPI.ListImage = imageUrl;
+            } catch(error) {
+                console.error('Error when retrieving image:', error);
+                // handle error, for example set the imageUrl to a default one
+            }
         }
         
         console.log(notesFromAPI);

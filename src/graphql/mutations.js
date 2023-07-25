@@ -51,6 +51,7 @@ export const updateOrder = /* GraphQL */ `
     $OrderStatus: String
     $OrderCheckoutSessionID: String
     $OrderCheckoutSessionURL: String
+    $OrderCheckoutSessionPaymentIntent: String
   ) {
     updateOrder(
       sellerid: $sellerid
@@ -59,6 +60,7 @@ export const updateOrder = /* GraphQL */ `
       OrderStatus: $OrderStatus
       OrderCheckoutSessionID: $OrderCheckoutSessionID
       OrderCheckoutSessionURL: $OrderCheckoutSessionURL
+      OrderCheckoutSessionPaymentIntent: $OrderCheckoutSessionPaymentIntent
     )
   }
 `;
@@ -103,6 +105,7 @@ export const addNewOrder = /* GraphQL */ `
       OrderOfList
       OrderCheckoutSessionID
       OrderCheckoutSessionURL
+      OrderCheckoutSessionPaymentIntent
       __typename
     }
   }
@@ -158,12 +161,14 @@ export const updateUser = /* GraphQL */ `
     $UserSubscriptionStatus: String
     $UserConnectedAccountUrl: String
     $UserConnectedAccountExpiresTime: String
+    $UserConnectedAccountStatus: String
   ) {
     updateUser(
       pkid: $pkid
       UserSubscriptionStatus: $UserSubscriptionStatus
       UserConnectedAccountUrl: $UserConnectedAccountUrl
       UserConnectedAccountExpiresTime: $UserConnectedAccountExpiresTime
+      UserConnectedAccountStatus: $UserConnectedAccountStatus
     )
   }
 `;
