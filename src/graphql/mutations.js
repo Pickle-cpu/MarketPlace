@@ -1,6 +1,11 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const stripePaymentRefund = /* GraphQL */ `
+  mutation StripePaymentRefund($paymentIntent: String) {
+    stripePaymentRefund(paymentIntent: $paymentIntent)
+  }
+`;
 export const stripeBuyAndSplit = /* GraphQL */ `
   mutation StripeBuyAndSplit(
     $connectedAccountID: String!
