@@ -326,6 +326,7 @@ type Mutation {
 }
 
 type Query {
+	getNoteRelatedOrderExist(buyerid: String!, OrderOfList: String!): Boolean
 	getOrdersByBuyer(buyerid: String!): OrderList
 	getOrdersBySeller(sellerid: String!): OrderList
 	getUser(pkid: String!): User
