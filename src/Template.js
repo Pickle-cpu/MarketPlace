@@ -418,7 +418,7 @@ function Template() {
               <Text as="span" fontWeight={700} style={{color: 'skyblue'}}>{note.ListStatus}</Text>
               
               
-              <Button onClick={() => handleButtonClick(note.SK)}>Update</Button>
+              {!note.ListPrice && (<Button onClick={() => handleButtonClick(note.SK)}>Update</Button>)}
               <Button onClick={() => handleDeleteConfirmation(note.SK)}>Delete</Button>
               {userSubscriptionStatus && (!note.ListPrice) && (<Button onClick={() => handlePublishConfirmation(note.SK)}>Publish</Button>)}
             </Flex>

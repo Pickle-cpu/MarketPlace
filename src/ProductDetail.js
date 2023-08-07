@@ -1,7 +1,7 @@
 import { API, Auth, Storage } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getNotesByStatus, getNoteRelatedOrderExist } from './graphql/queries';
+import { getNotesByStatus } from './graphql/queries';
 import {
   Button,
   Flex,
@@ -92,12 +92,6 @@ function ProductDetail() {
             return;
         }
 
-        // if(await checkrelatedorder()){
-        //     alert("You cannot buy the same product twice!");
-        //     navigate('/');
-        //     return;
-        // }
-
         const apiDataUser = await API.graphql({
             query: getUser,
             variables: { pkid: pk },
@@ -148,32 +142,13 @@ function ProductDetail() {
             if(userEmail === ""){
                 alert("Please sign in to purchase the todo list!");
                 navigate('/signin');
-            }
-            else if(await checkrelatedorder()){
-                alert("You cannot buy the same product twice!");
-                navigate('/');
-            }
-            else{
+            }else{
                 handleAddNewOrder();
             }
         } catch (error) {
             alert('Please log in before you buy!');
             navigate('/signin');
         }
-    }
-
-    async function checkrelatedorder(){
-
-        const apiDataOrder = await API.graphql({
-            query: getNoteRelatedOrderExist,
-            variables: {
-              buyerid: userEmail,
-              OrderOfList: sk
-            },
-          });
-          const checkrelateresult = apiDataOrder.data.getNoteRelatedOrderExist;
-          console.log(checkrelateresult);
-          return checkrelateresult;
     }
 
     return (
